@@ -1,0 +1,2629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HelvionSwissChem — Swiss Laboratory Science</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #F5F2EC;
+    --ivory: #FAF8F4;
+    --charcoal: #1C1C1E;
+    --slate: #3A3A3C;
+    --muted: #6B6B6F;
+    --border: rgba(28,28,30,0.1);
+    --border-strong: rgba(28,28,30,0.2);
+    --gold: #B8973B;
+    --gold-light: #D4AE5A;
+    --btc: #F7931A;
+    --white: #FFFFFF;
+    --card-bg: #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Figtree', sans-serif; background: var(--ivory); color: var(--charcoal); line-height: 1.6; overflow-x: hidden; }
+
+  /* Research disclaimer — sticky top ribbon */
+  .research-disclaimer {
+    position: sticky; top: 0; z-index: 200;
+    background: #0f1a0f; color: rgba(255,255,255,0.7);
+    text-align: center; font-size: 11px; letter-spacing: 0.07em;
+    padding: 7px 2rem; border-bottom: 1px solid rgba(29,107,58,0.4);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .research-disclaimer::before { content: '⚠'; color: #4caf6e; font-size: 12px; }
+  .research-disclaimer strong { color: #4caf6e; font-weight: 600; }
+
+  .announce-bar {
+    background: var(--charcoal); color: rgba(255,255,255,0.65);
+    text-align: center; font-size: 12px; letter-spacing: 0.05em; padding: 9px 2rem;
+  }
+  .announce-bar strong { color: var(--gold-light); font-weight: 500; }
+
+  /* Purity badge on product cards */
+  .purity-hplc-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; letter-spacing: 0.1em; font-weight: 700;
+    color: #1D6B3A; background: #EFF7F2; border: 0.5px solid #b2dfca;
+    padding: 3px 8px; border-radius: 1px; text-transform: uppercase;
+  }
+  .purity-hplc-badge::before { content: '✓'; font-size: 9px; }
+
+  /* Vial showcase section */
+  #vials-showcase { padding: 7rem 6vw; background: var(--charcoal); overflow: hidden; }
+  #vials-showcase .section-eyebrow { color: var(--gold-light); }
+  #vials-showcase .section-title { color: var(--white); }
+  #vials-showcase .section-sub { color: rgba(255,255,255,0.42); }
+  .vials-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.1); margin-top: 4rem; }
+  .vial-card { background: rgba(255,255,255,0.03); padding: 2.5rem 1.75rem; display: flex; flex-direction: column; align-items: center; text-align: center; transition: background 0.2s; border-right: 0.5px solid rgba(255,255,255,0.07); }
+  .vial-card:last-child { border-right: none; }
+  .vial-card:hover { background: rgba(184,151,59,0.06); }
+  .vial-illustration { margin-bottom: 1.5rem; position: relative; }
+  .vial-illustration::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 82px;
+    width: 28px;
+    height: 28px;
+    transform: translateX(-50%);
+    background: url('4241d421-c09d-421a-98ac-4a21f9a5882e.png') center / contain no-repeat;
+    border-radius: 50%;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.18));
+  }
+  .vial-label-tag { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 7px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--charcoal); background: var(--cream); padding: 2px 5px; border-radius: 1px; }
+  .vial-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--white); margin-bottom: 0.4rem; }
+  .vial-card p { font-size: 12px; color: rgba(255,255,255,0.38); line-height: 1.7; font-weight: 300; }
+  .vial-badge { margin-top: 1rem; font-size: 10px; letter-spacing: 0.1em; font-weight: 600; color: var(--gold-light); background: rgba(184,151,59,0.1); border: 0.5px solid rgba(184,151,59,0.3); padding: 4px 10px; border-radius: 1px; text-transform: uppercase; }
+
+  /* Certificates section */
+  #certificates { padding: 7rem 6vw; background: var(--cream); }
+  .certs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border: 0.5px solid var(--border); margin-top: 4rem; }
+  .cert-card { background: var(--white); padding: 2.5rem 2rem; display: flex; flex-direction: column; gap: 1rem; transition: background 0.2s; }
+  .cert-card:hover { background: var(--ivory); }
+  .cert-icon { width: 52px; height: 52px; border: 0.5px solid var(--border-strong); border-radius: 2px; display: flex; align-items: center; justify-content: center; }
+  .cert-icon svg { width: 26px; height: 26px; color: var(--gold); }
+  .cert-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--charcoal); }
+  .cert-card p { font-size: 13px; color: var(--muted); line-height: 1.8; font-weight: 300; }
+  .cert-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 0.12em; font-weight: 600; text-transform: uppercase; color: #1D6B3A; }
+  .cert-badge::before { content: '●'; font-size: 7px; color: #4caf6e; }
+  .cert-mock { margin-top: 1rem; padding: 1rem; background: var(--cream); border: 0.5px solid var(--border); border-radius: 2px; font-size: 11px; color: var(--muted); font-family: monospace; line-height: 1.8; }
+  .cert-mock span { color: var(--gold); font-weight: 600; }
+  .hero-molecule::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 118px;
+    width: 34px;
+    height: 34px;
+    transform: translateX(-50%);
+    background: url('4241d421-c09d-421a-98ac-4a21f9a5882e.png') center / contain no-repeat;
+    border-radius: 50%;
+    z-index: 2;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
+  }
+  .hero-brand-badge-logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #111;
+  }
+
+  /* FAQ accordion */
+  #faq { padding: 7rem 6vw; background: var(--ivory); }
+  .faq-list { max-width: 820px; margin: 3rem auto 0; border: 0.5px solid var(--border); border-radius: 2px; overflow: hidden; }
+  .faq-item { border-bottom: 0.5px solid var(--border); }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q { width: 100%; background: none; border: none; padding: 1.5rem 2rem; text-align: left; font-family: 'Figtree', sans-serif; font-size: 14px; font-weight: 500; color: var(--charcoal); cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1rem; transition: background 0.15s; }
+  .faq-q:hover { background: var(--cream); }
+  .faq-q.open { background: var(--cream); color: var(--gold); }
+  .faq-chevron { width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.25s; color: var(--muted); }
+  .faq-q.open .faq-chevron { transform: rotate(180deg); color: var(--gold); }
+  .faq-a { display: none; padding: 0 2rem 1.5rem; font-size: 13.5px; color: var(--muted); line-height: 1.85; font-weight: 300; }
+  .faq-a.open { display: block; }
+  .faq-a strong { color: var(--charcoal); font-weight: 500; }
+  @media (max-width: 960px) {
+    .vials-grid { grid-template-columns: repeat(2, 1fr); }
+    .certs-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .vials-grid { grid-template-columns: 1fr; }
+  }
+
+  nav {
+    position: sticky; top: 30px; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 4vw; height: 68px;
+    background: rgba(250,248,244,0.96); backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.04em; color: var(--charcoal); text-decoration: none; }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-size: 12px; font-weight: 500; letter-spacing: 0.09em; text-transform: uppercase; text-decoration: none; color: var(--muted); transition: color 0.2s; }
+  .nav-links a:hover { color: var(--charcoal); }
+  .nav-cta { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-decoration: none; color: var(--white); background: var(--charcoal); padding: 9px 22px; border-radius: 2px; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--slate); }
+
+  .hero { min-height: calc(100vh - 36px - 68px); display: grid; grid-template-columns: 1fr 1fr; align-items: center; }
+  .hero-left { padding: 6vw 4vw 6vw 8vw; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 2rem; }
+  .hero-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--gold); }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 5vw, 68px); font-weight: 300; line-height: 1.1; color: var(--charcoal); margin-bottom: 1.5rem; }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-tagline { font-size: 14.5px; color: var(--charcoal); line-height: 1.8; max-width: 440px; margin-bottom: 1.25rem; border-left: 2px solid var(--gold); padding-left: 1rem; font-style: italic; }
+  .hero-tagline strong { font-style: normal; font-weight: 600; color: var(--gold); }
+  .hero-note { font-size: 12px; color: var(--muted); margin-bottom: 2.5rem; display: flex; align-items: flex-start; gap: 8px; line-height: 1.6; max-width: 440px; }
+  .hero-note::before { content: '★'; color: var(--gold); font-size: 10px; flex-shrink: 0; margin-top: 2px; }
+  .hero-actions { display: flex; gap: 1rem; align-items: center; }
+  .btn-primary { display: inline-block; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; color: var(--white); background: var(--charcoal); padding: 14px 32px; border-radius: 2px; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--slate); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; color: var(--muted); transition: color 0.2s; }
+  .btn-secondary:hover { color: var(--charcoal); }
+
+  .hero-right { position: relative; height: calc(100vh - 36px - 68px); background: var(--cream); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+  .hero-pattern { position: absolute; inset: 0; background-image: radial-gradient(circle at 30% 30%, rgba(184,151,59,0.07) 0%, transparent 60%), radial-gradient(circle at 80% 80%, rgba(184,151,59,0.04) 0%, transparent 50%); }
+  .hero-molecule { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .hero-stats { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 0.5px solid var(--border-strong); background: rgba(250,248,244,0.75); backdrop-filter: blur(8px); }
+  .hero-stat { padding: 1.75rem 1.5rem; border-right: 0.5px solid var(--border); }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 300; color: var(--charcoal); display: block; }
+  .hero-stat-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+
+  .trust-bar { border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); padding: 1.1rem 6vw; display: flex; align-items: center; gap: 2.5rem; background: var(--cream); overflow-x: auto; flex-wrap: wrap; }
+  .trust-item { display: flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+  .trust-item svg { width: 15px; height: 15px; color: var(--gold); flex-shrink: 0; }
+
+  .section-header { text-align: center; padding: 0 4vw; margin-bottom: 4rem; }
+  .section-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 1rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 4vw, 50px); font-weight: 300; line-height: 1.15; color: var(--charcoal); max-width: 640px; margin: 0 auto 1rem; }
+  .section-sub { font-size: 15px; color: var(--muted); max-width: 520px; margin: 0 auto; font-weight: 300; line-height: 1.8; }
+
+  #catalog { padding: 8rem 6vw; }
+  .catalog-tools { max-width: 1120px; margin: -2rem auto 2rem; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 0.75rem; align-items: center; }
+  .catalog-tools input, .catalog-tools select { width: 100%; font-family: 'Figtree', sans-serif; font-size: 13px; color: var(--charcoal); background: var(--white); border: 0.5px solid var(--border-strong); border-radius: 2px; padding: 12px 14px; outline: none; }
+  .catalog-tools input:focus, .catalog-tools select:focus { border-color: var(--gold); }
+  .catalog-count { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: right; }
+  .catalog-empty { display: none; padding: 2rem; text-align: center; background: var(--white); border: 0.5px solid var(--border); color: var(--muted); font-size: 13px; }
+  .catalog-empty.show { display: block; }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 2px; border: 0.5px solid var(--border); background: var(--border); }
+  .product-card { background: var(--card-bg); padding: 2.25rem; display: flex; flex-direction: column; transition: background 0.2s; }
+  .product-card:hover { background: var(--cream); }
+  .product-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
+  .product-badge { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; padding: 5px 12px; border-radius: 1px; }
+  .badge-recovery { background: #EFF7F2; color: #1D6B3A; }
+  .badge-hormone  { background: #F0F4FF; color: #2D4DB8; }
+  .badge-longevity{ background: #FDF6EC; color: #8A5A14; }
+  .badge-combo    { background: #FFF0F0; color: #B83D3D; }
+  .product-tag { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+  .product-code { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--charcoal); margin-bottom: 0.3rem; line-height: 1.15; }
+  .product-name { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 1rem; }
+  .product-desc { font-size: 13px; color: var(--slate); line-height: 1.75; font-weight: 300; flex: 1; margin-bottom: 1.25rem; }
+  .product-specs { display: flex; gap: 1.25rem; padding-top: 1rem; border-top: 0.5px solid var(--border); margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .spec { display: flex; flex-direction: column; gap: 2px; }
+  .spec-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  .spec-val { font-size: 13px; font-weight: 500; color: var(--charcoal); }
+  .product-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+  .price-block { display: flex; flex-direction: column; gap: 2px; }
+  .price-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  .product-price { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; color: var(--charcoal); }
+  .product-price-btc { font-size: 11px; color: var(--btc); font-weight: 500; }
+  .product-cta { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--gold); display: flex; align-items: center; gap: 5px; transition: gap 0.2s; cursor: pointer; }
+  .product-card:hover .product-cta { gap: 10px; }
+
+  .coming-soon-card { background: var(--charcoal); padding: 2.25rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 320px; }
+  .coming-soon-icon { width: 48px; height: 48px; border: 0.5px solid rgba(184,151,59,0.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: var(--gold-light); font-size: 22px; font-weight: 300; }
+  .coming-soon-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--white); margin-bottom: 0.75rem; }
+  .coming-soon-card p { font-size: 13px; color: rgba(255,255,255,0.38); line-height: 1.75; font-weight: 300; max-width: 220px; }
+  .notify-btn { margin-top: 1.5rem; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--gold-light); background: none; border: 0.5px solid rgba(184,151,59,0.4); padding: 9px 20px; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+  .notify-btn:hover { border-color: var(--gold-light); color: var(--white); }
+
+  #payment { padding: 6rem 6vw; background: var(--charcoal); }
+  .btc-inner { max-width: 920px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .btc-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--btc); font-weight: 500; margin-bottom: 1.25rem; }
+  .btc-title { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 300; color: var(--white); line-height: 1.2; margin-bottom: 1rem; }
+  .btc-desc { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.85; font-weight: 300; margin-bottom: 2rem; }
+  .btc-steps { display: flex; flex-direction: column; gap: 1.1rem; }
+  .btc-step { display: flex; gap: 1rem; align-items: flex-start; }
+  .btc-step-num { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--btc); min-width: 24px; }
+  .btc-step-text { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.7; font-weight: 300; }
+  .btc-step-text strong { color: rgba(255,255,255,0.78); font-weight: 500; }
+  .btc-right { background: rgba(247,147,26,0.06); border: 0.5px solid rgba(247,147,26,0.2); border-radius: 4px; padding: 2.5rem; }
+  .btc-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 2rem; }
+  .btc-symbol { width: 50px; height: 50px; background: var(--btc); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: white; font-family: 'Cormorant Garamond', serif; }
+  .btc-brand-name { font-size: 17px; font-weight: 600; color: var(--white); display: block; }
+  .btc-brand-sub { font-size: 12px; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; display: block; }
+  .btc-features { display: flex; flex-direction: column; gap: 0.85rem; }
+  .btc-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 300; line-height: 1.6; }
+  .btc-feature::before { content: '✓'; color: var(--btc); font-size: 12px; font-weight: 600; margin-top: 1px; flex-shrink: 0; }
+  .btc-note { margin-top: 1.75rem; padding-top: 1.5rem; border-top: 0.5px solid rgba(247,147,26,0.15); font-size: 11px; color: rgba(255,255,255,0.25); line-height: 1.7; }
+
+  #about { padding: 8rem 0; background: #1C1C1E; color: var(--white); }
+  #about .section-eyebrow { color: var(--gold-light); }
+  #about .section-title { color: var(--white); }
+  #about .section-sub { color: rgba(255,255,255,0.42); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; margin-top: 5rem; border-top: 0.5px solid rgba(255,255,255,0.08); }
+  .about-col { padding: 4rem 8vw; border-right: 0.5px solid rgba(255,255,255,0.08); }
+  .about-col:last-child { border-right: none; }
+  .about-col h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--gold-light); margin-bottom: 1rem; }
+  .about-col p { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.85; font-weight: 300; }
+  .about-col ul { list-style: none; margin-top: 1rem; }
+  .about-col ul li { font-size: 13.5px; color: rgba(255,255,255,0.45); padding: 0.5rem 0; border-bottom: 0.5px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 10px; }
+  .about-col ul li::before { content: ''; display: inline-block; width: 18px; height: 1px; background: var(--gold); flex-shrink: 0; }
+
+  #process { padding: 8rem 6vw; background: var(--cream); }
+  .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 0.5px solid var(--border); background: var(--border); margin-top: 4rem; }
+  .step { background: var(--cream); padding: 2.5rem 2rem; }
+  .step-num { font-family: 'Cormorant Garamond', serif; font-size: 58px; font-weight: 300; color: rgba(184,151,59,0.18); line-height: 1; margin-bottom: 1.5rem; }
+  .step h4 { font-size: 14px; font-weight: 600; color: var(--charcoal); margin-bottom: 0.75rem; }
+  .step p { font-size: 13px; color: var(--muted); line-height: 1.75; font-weight: 300; }
+
+  #shipping { padding: 5rem 6vw; background: var(--ivory); border-top: 0.5px solid var(--border); }
+  .shipping-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; border: 0.5px solid var(--border); background: var(--border); margin-top: 3rem; }
+  .shipping-card { background: var(--card-bg); padding: 2.5rem; }
+  .shipping-card-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+  .shipping-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--charcoal); margin-bottom: 0.75rem; }
+  .shipping-card p { font-size: 13px; color: var(--muted); line-height: 1.8; font-weight: 300; }
+
+  #contact { padding: 8rem 6vw; }
+  .contact-inner { max-width: 640px; margin: 0 auto; text-align: center; }
+  .contact-email-box { margin: 1.75rem auto; display: inline-flex; align-items: center; gap: 12px; background: var(--cream); border: 0.5px solid var(--border-strong); padding: 14px 24px; border-radius: 2px; }
+  .contact-email-box svg { width: 18px; height: 18px; color: var(--gold); flex-shrink: 0; }
+  .contact-email-box a { font-size: 15px; font-weight: 500; color: var(--charcoal); text-decoration: none; }
+  .contact-email-box a:hover { color: var(--gold); }
+  .contact-form { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; text-align: left; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: var(--muted); }
+  .form-group input, .form-group select, .form-group textarea { font-family: 'Figtree', sans-serif; font-size: 14px; color: var(--charcoal); background: var(--white); border: 0.5px solid var(--border-strong); border-radius: 2px; padding: 12px 14px; outline: none; transition: border-color 0.2s; resize: vertical; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
+  .btc-payment-note { margin-top: 0.25rem; padding: 1rem 1.25rem; border: 0.5px solid rgba(247,147,26,0.3); background: rgba(247,147,26,0.04); border-radius: 2px; font-size: 13px; color: var(--slate); line-height: 1.7; display: flex; align-items: flex-start; gap: 10px; }
+  .btc-payment-note .btc-icon { color: var(--btc); font-weight: 700; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .form-submit { font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); background: var(--charcoal); border: none; border-radius: 2px; padding: 16px 40px; cursor: pointer; transition: background 0.2s; align-self: flex-start; margin-top: 0.5rem; }
+  .form-submit:hover { background: var(--slate); }
+  .form-hint { font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: -0.25rem; }
+  .disclaimer { font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 1rem; padding: 1rem; border: 0.5px solid var(--border); border-radius: 2px; background: var(--cream); }
+
+  footer { background: var(--charcoal); padding: 5rem 6vw 2.5rem; }
+  .footer-tagline-block { border-bottom: 0.5px solid rgba(255,255,255,0.08); padding-bottom: 3rem; margin-bottom: 3rem; text-align: center; }
+  .footer-tagline-main { font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 2.2vw, 26px); font-weight: 300; color: rgba(255,255,255,0.65); line-height: 1.6; max-width: 760px; margin: 0 auto 0.85rem; font-style: italic; }
+  .footer-tagline-main strong { font-style: normal; font-weight: 600; color: var(--gold-light); }
+  .footer-shipping-note { font-size: 12px; color: rgba(255,255,255,0.28); letter-spacing: 0.04em; display: flex; align-items: center; gap: 8px; justify-content: center; }
+  .footer-shipping-note::before { content: '★'; color: var(--gold); font-size: 10px; }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+  .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--white); letter-spacing: 0.04em; display: block; margin-bottom: 0.75rem; }
+  .footer-brand span { color: var(--gold-light); }
+  .footer-tagline-short { font-size: 13px; color: rgba(255,255,255,0.28); font-weight: 300; line-height: 1.8; max-width: 280px; margin-bottom: 0.75rem; }
+  .footer-email-row { font-size: 12px; color: rgba(255,255,255,0.35); display: flex; align-items: center; gap: 6px; }
+  .footer-email-row a { color: var(--gold-light); text-decoration: none; font-weight: 500; }
+  .footer-email-row a:hover { color: var(--white); }
+  .footer-col h5 { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; color: rgba(255,255,255,0.35); margin-bottom: 1.25rem; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { font-size: 13px; color: rgba(255,255,255,0.28); padding: 0.35rem 0; font-weight: 300; transition: color 0.2s; }
+  .footer-col ul li:hover { color: rgba(255,255,255,0.65); cursor: default; }
+  .footer-col ul li a { text-decoration: none; color: inherit; }
+  .footer-col ul li.coming { color: rgba(184,151,59,0.45); font-style: italic; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; font-size: 11px; color: rgba(255,255,255,0.16); font-weight: 300; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* Interactive product card controls */
+  .product-controls { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; padding-top: 1rem; border-top: 0.5px solid var(--border); }
+  .qty-row { display: flex; align-items: center; gap: 0; border: 0.5px solid var(--border-strong); border-radius: 2px; width: fit-content; }
+  .qty-btn { background: none; border: none; width: 34px; height: 34px; font-size: 18px; font-weight: 300; color: var(--charcoal); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; user-select: none; }
+  .qty-btn:hover { background: var(--cream); }
+  .qty-val { width: 38px; height: 34px; text-align: center; font-size: 14px; font-weight: 500; color: var(--charcoal); border: none; border-left: 0.5px solid var(--border-strong); border-right: 0.5px solid var(--border-strong); background: var(--white); outline: none; }
+  .add-to-inquiry-btn { font-family: 'Figtree', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); background: var(--charcoal); border: none; border-radius: 2px; padding: 10px 18px; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 7px; }
+  .add-to-inquiry-btn:hover { background: var(--slate); }
+  .add-to-inquiry-btn.added { background: #1D6B3A; }
+  .product-card-top-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+  .stock-badge { font-size: 10px; letter-spacing: 0.08em; font-weight: 600; color: #1D6B3A; background: #EFF7F2; padding: 3px 9px; border-radius: 1px; white-space: nowrap; }
+  .stock-badge.low { color: #8A5A14; background: #FDF6EC; }
+
+  /* Cart / inquiry tray */
+  #inquiry-tray { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200; }
+  .tray-btn { background: var(--charcoal); color: var(--white); border: none; border-radius: 3px; padding: 13px 20px; font-family: 'Figtree', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); transition: background 0.2s; }
+  .tray-btn:hover { background: var(--slate); }
+  .tray-count { background: var(--gold); color: var(--white); border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .tray-panel { position: absolute; bottom: 56px; right: 0; width: 320px; background: var(--white); border: 0.5px solid var(--border-strong); border-radius: 4px; box-shadow: 0 8px 40px rgba(0,0,0,0.14); padding: 1.5rem; display: none; }
+  .tray-panel.open { display: block; }
+  .tray-panel h4 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--charcoal); margin-bottom: 1rem; }
+  .tray-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--charcoal); }
+  .tray-item-name { font-weight: 500; }
+  .tray-item-qty { color: var(--muted); font-size: 12px; }
+  .tray-item-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 0 4px; transition: color 0.15s; }
+  .tray-item-remove:hover { color: #B83D3D; }
+  .tray-total { display: flex; justify-content: space-between; margin-top: 0.75rem; font-size: 14px; font-weight: 600; color: var(--charcoal); }
+  .tray-total-btc { font-size: 11px; color: var(--btc); font-weight: 500; margin-top: 2px; }
+  .tray-cta { display: block; margin-top: 1rem; width: 100%; padding: 12px; background: var(--charcoal); color: var(--white); border: none; border-radius: 2px; font-family: 'Figtree', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+  .tray-cta:hover { background: var(--slate); }
+
+  .tray-empty { font-size: 13px; color: var(--muted); text-align: center; padding: 1rem 0; }
+
+  /* Calculator section */
+  #calculator { padding: 8rem 6vw; background: var(--charcoal); }
+  #calculator .section-eyebrow { color: var(--gold-light); }
+  #calculator .section-title { color: var(--white); }
+  #calculator .section-sub { color: rgba(255,255,255,0.42); }
+  .calc-wrapper { max-width: 720px; margin: 3rem auto 0; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2.5rem; }
+  .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+  .calc-group { display: flex; flex-direction: column; gap: 6px; }
+  .calc-group label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; color: rgba(255,255,255,0.4); }
+  .calc-group input, .calc-group select { font-family: 'Figtree', sans-serif; font-size: 14px; color: var(--charcoal); background: var(--white); border: 0.5px solid rgba(255,255,255,0.2); border-radius: 2px; padding: 11px 14px; outline: none; transition: border-color 0.2s; }
+  .calc-group input:focus, .calc-group select:focus { border-color: var(--gold); }
+  .calc-btn { width: 100%; padding: 14px; background: var(--gold); color: var(--white); border: none; border-radius: 2px; font-family: 'Figtree', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; margin-bottom: 1.5rem; }
+  .calc-btn:hover { background: var(--gold-light); }
+  .calc-result { display: none; background: rgba(184,151,59,0.08); border: 0.5px solid rgba(184,151,59,0.25); border-radius: 3px; padding: 1.5rem; }
+  .calc-result.show { display: block; }
+  .calc-result h4 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--gold-light); margin-bottom: 1rem; }
+  .calc-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .calc-result-item { display: flex; flex-direction: column; gap: 3px; }
+  .calc-result-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); font-weight: 500; }
+  .calc-result-val { font-size: 18px; font-weight: 500; color: var(--white); }
+  .calc-result-sub { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-top: 1rem; }
+  .calc-presets { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .calc-preset { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; padding: 6px 14px; background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.12); border-radius: 2px; color: rgba(255,255,255,0.55); cursor: pointer; transition: all 0.15s; }
+  .calc-preset:hover, .calc-preset.active { background: rgba(184,151,59,0.15); border-color: var(--gold); color: var(--gold-light); }
+
+  /* Contact: email + telegram boxes */
+  .contact-channels { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 1.75rem auto; }
+  .contact-channel-box { display: inline-flex; align-items: center; gap: 12px; background: var(--cream); border: 0.5px solid var(--border-strong); padding: 14px 22px; border-radius: 2px; text-decoration: none; transition: border-color 0.2s; }
+  .contact-channel-box:hover { border-color: var(--gold); }
+  .contact-channel-box svg, .contact-channel-box .ch-icon { width: 18px; height: 18px; color: var(--gold); flex-shrink: 0; }
+  .contact-channel-box .ch-icon { font-size: 18px; line-height: 1; }
+  .contact-channel-box a, .contact-channel-box span.ch-label { font-size: 14px; font-weight: 500; color: var(--charcoal); text-decoration: none; }
+
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { height: 260px; }
+    .hero-left { padding: 7vw; }
+    nav .nav-links { display: none; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-col { border-right: none; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .shipping-grid { grid-template-columns: 1fr; }
+    .calc-grid { grid-template-columns: 1fr; }
+    .calc-result-grid { grid-template-columns: 1fr 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .catalog-tools { grid-template-columns: 1fr; margin-top: -1rem; }
+    .catalog-count { text-align: left; }
+    .btc-inner { grid-template-columns: 1fr; gap: 3rem; }
+  }
+  @media (max-width: 600px) {
+    .steps-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; }
+    .products-grid { grid-template-columns: 1fr; }
+  }
+  /* ── BTC Payment Modal ── */
+  .btc-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px); z-index:500; align-items:center; justify-content:center; }
+  .btc-modal-overlay.open { display:flex; }
+  .btc-modal { background:var(--white); border-radius:4px; padding:2.5rem; width:90%; max-width:480px; position:relative; box-shadow:0 16px 64px rgba(0,0,0,0.22); animation:modalIn 0.2s ease; }
+  @keyframes modalIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .btc-modal-close { position:absolute; top:1rem; right:1.25rem; background:none; border:none; font-size:22px; color:var(--muted); cursor:pointer; line-height:1; }
+  .btc-modal-close:hover { color:var(--charcoal); }
+  .btc-modal-eyebrow { font-size:10px; letter-spacing:0.14em; text-transform:uppercase; font-weight:600; color:var(--btc); margin-bottom:0.5rem; }
+  .btc-modal-title { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; color:var(--charcoal); margin-bottom:0.25rem; }
+  .btc-modal-subtitle { font-size:13px; color:var(--muted); margin-bottom:1.75rem; }
+  .btc-modal-summary { background:var(--cream); border:0.5px solid var(--border-strong); border-radius:2px; padding:1rem 1.25rem; margin-bottom:1.5rem; }
+  .btc-modal-summary-row { display:flex; justify-content:space-between; font-size:13px; color:var(--charcoal); padding:3px 0; }
+  .btc-modal-summary-row.total { font-weight:600; border-top:0.5px solid var(--border-strong); margin-top:6px; padding-top:10px; }
+  .btc-modal-summary-row.btc-row { font-size:12px; color:var(--btc); font-weight:500; }
+  .btc-qr-wrapper { display:flex; justify-content:center; margin:1.25rem 0; }
+  #btc-qr-canvas { border:0.5px solid var(--border); border-radius:3px; padding:10px; background:white; }
+  .btc-address-box { display:flex; align-items:center; gap:0.5rem; background:var(--cream); border:0.5px solid var(--border-strong); border-radius:2px; padding:10px 14px; margin-bottom:1.25rem; }
+  .btc-address-text { font-family:monospace; font-size:12px; color:var(--charcoal); word-break:break-all; flex:1; }
+  .btc-copy-btn { background:var(--charcoal); color:var(--white); border:none; border-radius:2px; padding:6px 12px; font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap; transition:background 0.2s; }
+  .btc-copy-btn:hover { background:var(--slate); }
+  .btc-copy-btn.copied { background:#1D6B3A; }
+  .btc-uri-btn { display:block; width:100%; padding:13px; background:var(--btc); color:var(--white); border:none; border-radius:2px; font-family:'Figtree',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:background 0.2s; margin-bottom:0.75rem; text-align:center; text-decoration:none; }
+  .btc-uri-btn:hover { background:#d97f0f; }
+  .btc-modal-note { font-size:11px; color:var(--muted); line-height:1.7; text-align:center; }
+  .btc-modal-note strong { color:var(--charcoal); }
+  .btc-txid-row { margin-top:1rem; display:flex; flex-direction:column; gap:6px; }
+  .btc-txid-row label { font-size:11px; letter-spacing:0.1em; text-transform:uppercase; font-weight:500; color:var(--muted); }
+  .btc-txid-row input { font-family:monospace; font-size:12px; padding:9px 12px; border:0.5px solid var(--border-strong); border-radius:2px; outline:none; color:var(--charcoal); }
+  .btc-txid-row input:focus { border-color:var(--gold); }
+  .btc-confirm-btn { margin-top:0.6rem; width:100%; padding:12px; background:var(--charcoal); color:var(--white); border:none; border-radius:2px; font-family:'Figtree',sans-serif; font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.2s; }
+  .btc-confirm-btn:hover { background:var(--slate); }
+
+  /* ── Shipping / Checkout Modal ── */
+  .ship-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); z-index:600; align-items:center; justify-content:center; padding:1rem; }
+  .ship-modal-overlay.open { display:flex; }
+  .ship-modal { background:var(--white); border-radius:4px; width:100%; max-width:540px; max-height:92vh; overflow-y:auto; position:relative; box-shadow:0 20px 80px rgba(0,0,0,0.25); animation:modalIn 0.22s ease; }
+  .ship-modal-header { padding:2rem 2rem 1.25rem; border-bottom:0.5px solid var(--border); position:sticky; top:0; background:var(--white); z-index:1; }
+  .ship-modal-close { position:absolute; top:1.1rem; right:1.25rem; background:none; border:none; font-size:22px; color:var(--muted); cursor:pointer; }
+  .ship-modal-close:hover { color:var(--charcoal); }
+  .ship-modal-eyebrow { font-size:10px; letter-spacing:0.14em; text-transform:uppercase; font-weight:600; color:var(--gold); margin-bottom:0.3rem; }
+  .ship-modal-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:300; color:var(--charcoal); }
+  .ship-modal-body { padding:1.75rem 2rem 2rem; display:flex; flex-direction:column; gap:1.25rem; }
+  .ship-section-title { font-size:10px; letter-spacing:0.13em; text-transform:uppercase; font-weight:600; color:var(--muted); border-bottom:0.5px solid var(--border); padding-bottom:0.5rem; margin-bottom:0.25rem; }
+  .ship-field { display:flex; flex-direction:column; gap:5px; }
+  .ship-field label { font-size:12px; font-weight:500; color:var(--charcoal); letter-spacing:0.02em; }
+  .ship-field label span { color:#B83D3D; margin-left:2px; }
+  .ship-field input { font-family:'Figtree',sans-serif; font-size:14px; color:var(--charcoal); background:var(--white); border:0.5px solid var(--border-strong); border-radius:2px; padding:11px 14px; outline:none; transition:border-color 0.2s; }
+  .ship-field input:focus { border-color:var(--gold); }
+  .ship-field input.error { border-color:#B83D3D; background:#fff8f8; }
+  .ship-row { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+  .ship-order-summary { background:var(--cream); border:0.5px solid var(--border-strong); border-radius:2px; padding:1rem 1.25rem; }
+  .ship-order-row { display:flex; justify-content:space-between; font-size:13px; color:var(--charcoal); padding:3px 0; }
+  .ship-order-row.total { font-weight:600; border-top:0.5px solid var(--border-strong); margin-top:6px; padding-top:8px; }
+  .ship-order-row.btc { font-size:11px; color:var(--btc); font-weight:500; }
+  .ship-submit-btn { width:100%; padding:14px; background:var(--charcoal); color:var(--white); border:none; border-radius:2px; font-family:'Figtree',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; }
+  .ship-submit-btn:hover { background:var(--slate); }
+  .ship-submit-btn svg { width:14px; height:14px; }
+
+
+  .tray-section-label { font-size:10px; letter-spacing:0.12em; text-transform:uppercase; font-weight:600; color:var(--muted); margin-top:1rem; margin-bottom:0.4rem; display:block; }
+  .tray-input { font-family:'Figtree',sans-serif; font-size:13px; padding:9px 12px; border:0.5px solid rgba(28,28,30,0.2); border-radius:2px; outline:none; color:#1C1C1E; width:100%; }
+  .tray-input:focus { border-color:var(--gold); }
+  .tray-input-row { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+
+  /* Shipping address block inside BTC modal */
+  .bm-shipping-block { background:var(--cream); border:0.5px solid var(--border-strong); border-radius:2px; padding:1rem 1.25rem; margin-bottom:1.25rem; }
+  .bm-shipping-block h5 { font-size:10px; letter-spacing:0.12em; text-transform:uppercase; font-weight:600; color:var(--muted); margin-bottom:0.75rem; }
+  .bm-shipping-row { display:flex; justify-content:space-between; font-size:13px; color:var(--charcoal); padding:2px 0; gap:1rem; }
+  .bm-shipping-row span:first-child { color:var(--muted); font-size:12px; white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<div class="research-disclaimer">
+  <strong>For in vitro research use only.</strong>&nbsp;Not for human or veterinary use. Not for sale to individuals. For licensed research purposes only.
+</div>
+
+<div class="announce-bar">
+  <strong>★ Orders placed before 12 PM EST, Monday–Friday, ship the same day.</strong> &nbsp;·&nbsp; DHL for international · DPD Switzerland for domestic · HPLC-verified · COA included · Bitcoin accepted
+</div>
+
+<nav>
+  <a href="#" class="nav-logo">Helvion<span>Chem</span></a>
+  <ul class="nav-links">
+    <li><a href="#catalog">Catalog</a></li>
+    <li><a href="#payment">Payment</a></li>
+    <li><a href="#calculator">Calculator</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#shipping">Shipping</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Inquire</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Swiss Laboratory Science</div>
+    <h1 class="hero-title">
+      Precision<br>Peptides.<br>
+      <em>Uncompromised</em><br>Purity.
+    </h1>
+    <p class="hero-tagline">
+      Reliable and innovative research with our top-grade materials and novel compounds tailored to lead the competitive research industry. Choose quality. Choose <strong>HelvionSwissChem</strong>.
+    </p>
+    <p class="hero-note">
+      Orders placed before 12 PM EST, Monday to Friday, ship the same day.
+    </p>
+    <div class="hero-actions">
+      <a href="#catalog" class="btn-primary">View Catalog</a>
+      <a href="#contact" class="btn-secondary">Contact Us →</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-pattern"></div>
+    <div class="hero-molecule" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
+      <!-- Branded vial trio -->
+      <svg width="280" height="320" viewBox="0 0 280 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ambient glow -->
+        <ellipse cx="140" cy="290" rx="90" ry="12" fill="#B8973B" opacity="0.08"/>
+
+        <!-- LEFT VIAL -->
+        <g transform="translate(32,30)">
+          <!-- Vial body -->
+          <rect x="18" y="40" width="44" height="130" rx="8" fill="url(#vGradL)" opacity="0.92"/>
+          <!-- Glass shine -->
+          <rect x="22" y="48" width="10" height="114" rx="4" fill="white" opacity="0.15"/>
+          <!-- Cap -->
+          <rect x="14" y="28" width="52" height="20" rx="4" fill="#B8973B" opacity="0.9"/>
+          <rect x="22" y="24" width="36" height="10" rx="3" fill="#D4AE5A" opacity="0.9"/>
+          <!-- Label -->
+          <rect x="20" y="85" width="40" height="55" rx="3" fill="white" opacity="0.92"/>
+          <!-- Swiss cross mini -->
+          <rect x="34" y="91" width="12" height="3" rx="1" fill="#CC2229"/>
+          <rect x="38" y="89" width="4" height="7" rx="1" fill="#CC2229"/>
+          <!-- Text lines -->
+          <rect x="23" y="101" width="34" height="2" rx="1" fill="#1C1C1E" opacity="0.5"/>
+          <rect x="25" y="106" width="30" height="2" rx="1" fill="#1C1C1E" opacity="0.35"/>
+          <rect x="27" y="111" width="26" height="2" rx="1" fill="#1C1C1E" opacity="0.25"/>
+          <rect x="23" y="117" width="34" height="2" rx="1" fill="#B8973B" opacity="0.7"/>
+          <!-- Liquid fill -->
+          <rect x="18" y="135" width="44" height="35" rx="0 0 8 8" fill="#B8973B" opacity="0.18"/>
+          <line x1="18" y1="135" x2="62" y2="135" stroke="#B8973B" stroke-width="0.75" opacity="0.4"/>
+        </g>
+
+        <!-- CENTER VIAL (taller, prominent) -->
+        <g transform="translate(103,0)">
+          <!-- Vial body -->
+          <rect x="18" y="35" width="54" height="160" rx="10" fill="url(#vGradC)" opacity="0.95"/>
+          <!-- Glass shine -->
+          <rect x="23" y="44" width="12" height="142" rx="5" fill="white" opacity="0.18"/>
+          <!-- Cap -->
+          <rect x="12" y="20" width="66" height="24" rx="5" fill="#B8973B" opacity="0.95"/>
+          <rect x="22" y="14" width="46" height="13" rx="4" fill="#D4AE5A"/>
+          <!-- Label -->
+          <rect x="20" y="88" width="50" height="70" rx="4" fill="white" opacity="0.96"/>
+          <!-- Swiss Peptides logo area on label -->
+          <!-- Shield mini -->
+          <path d="M45 95 L55 95 L55 108 Q50 112 45 108 Z" fill="#CC2229" opacity="0.85"/>
+          <rect x="48" y="98" width="4" height="1.5" rx="0.5" fill="white"/>
+          <rect x="49.5" y="96.5" width="1.5" height="4" rx="0.5" fill="white"/>
+          <!-- HSC text lines -->
+          <rect x="23" y="114" width="44" height="2.5" rx="1" fill="#1C1C1E" opacity="0.6"/>
+          <rect x="26" y="119.5" width="38" height="2" rx="1" fill="#1C1C1E" opacity="0.4"/>
+          <rect x="28" y="125" width="34" height="2" rx="1" fill="#1C1C1E" opacity="0.3"/>
+          <rect x="23" y="131" width="44" height="2" rx="1" fill="#B8973B" opacity="0.75"/>
+          <!-- Purity text -->
+          <rect x="26" y="137" width="38" height="2" rx="1" fill="#1D6B3A" opacity="0.8"/>
+          <rect x="30" y="142" width="30" height="2" rx="1" fill="#1D6B3A" opacity="0.5"/>
+          <!-- Liquid fill -->
+          <rect x="18" y="162" width="54" height="33" rx="0 0 10 10" fill="#B8973B" opacity="0.2"/>
+          <line x1="18" y1="162" x2="72" y2="162" stroke="#B8973B" stroke-width="1" opacity="0.45"/>
+        </g>
+
+        <!-- RIGHT VIAL -->
+        <g transform="translate(192,45)">
+          <!-- Vial body -->
+          <rect x="18" y="40" width="44" height="120" rx="8" fill="url(#vGradR)" opacity="0.9"/>
+          <!-- Glass shine -->
+          <rect x="22" y="48" width="10" height="104" rx="4" fill="white" opacity="0.13"/>
+          <!-- Cap -->
+          <rect x="14" y="28" width="52" height="20" rx="4" fill="#1C1C1E" opacity="0.85"/>
+          <rect x="22" y="24" width="36" height="10" rx="3" fill="#3A3A3C" opacity="0.9"/>
+          <!-- Label -->
+          <rect x="20" y="80" width="40" height="52" rx="3" fill="white" opacity="0.92"/>
+          <rect x="34" y="86" width="12" height="3" rx="1" fill="#CC2229"/>
+          <rect x="38" y="84" width="4" height="7" rx="1" fill="#CC2229"/>
+          <rect x="23" y="97" width="34" height="2" rx="1" fill="#1C1C1E" opacity="0.5"/>
+          <rect x="25" y="102" width="30" height="2" rx="1" fill="#1C1C1E" opacity="0.35"/>
+          <rect x="27" y="107" width="26" height="2" rx="1" fill="#1C1C1E" opacity="0.25"/>
+          <rect x="23" y="113" width="34" height="2" rx="1" fill="#B8973B" opacity="0.7"/>
+          <!-- Liquid fill -->
+          <rect x="18" y="128" width="44" height="32" rx="0 0 8 8" fill="#1C1C1E" opacity="0.25"/>
+          <line x1="18" y1="128" x2="62" y2="128" stroke="#B8973B" stroke-width="0.75" opacity="0.3"/>
+        </g>
+
+        <!-- Molecule network below -->
+        <g opacity="0.2" transform="translate(0,270)">
+          <circle cx="70" cy="20" r="4" fill="#B8973B"/>
+          <circle cx="140" cy="10" r="5" fill="#B8973B"/>
+          <circle cx="210" cy="20" r="4" fill="#B8973B"/>
+          <circle cx="100" cy="35" r="3" fill="#B8973B"/>
+          <circle cx="180" cy="35" r="3" fill="#B8973B"/>
+          <line x1="70" y1="20" x2="140" y2="10" stroke="#B8973B" stroke-width="0.75"/>
+          <line x1="140" y1="10" x2="210" y2="20" stroke="#B8973B" stroke-width="0.75"/>
+          <line x1="70" y1="20" x2="100" y2="35" stroke="#B8973B" stroke-width="0.5"/>
+          <line x1="210" y1="20" x2="180" y2="35" stroke="#B8973B" stroke-width="0.5"/>
+          <line x1="100" y1="35" x2="180" y2="35" stroke="#B8973B" stroke-width="0.5"/>
+        </g>
+
+        <defs>
+          <linearGradient id="vGradL" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#e8e0d0"/>
+            <stop offset="100%" stop-color="#f5f2ec"/>
+          </linearGradient>
+          <linearGradient id="vGradC" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ddd6c4"/>
+            <stop offset="100%" stop-color="#f0ece2"/>
+          </linearGradient>
+          <linearGradient id="vGradR" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#2a2a2c"/>
+            <stop offset="100%" stop-color="#3a3a3c"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <!-- Logo badge under vials -->
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:0.5px solid rgba(184,151,59,0.2);padding:10px 18px;border-radius:3px;">
+        <img class="hero-brand-badge-logo" src="4241d421-c09d-421a-98ac-4a21f9a5882e.png" alt="Swiss Peptides logo">
+        <span style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:rgba(255,255,255,0.85);letter-spacing:0.04em;">Helvion<span style="color:#D4AE5A;">Swiss</span>Chem</span>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num">99%+</span>
+        <span class="hero-stat-label">Purity Grade</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">CH</span>
+        <span class="hero-stat-label">Swiss Origin</span>
+      </div>
+      <div class="hero-stat" style="color:var(--btc)">
+        <span class="hero-stat-num" style="color:var(--btc)">₿TC</span>
+        <span class="hero-stat-label">Only Payment</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="trust-bar">
+  <div class="trust-item">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2l2.5 5 5.5.8-4 3.9.9 5.5L10 14.8l-4.9 2.4.9-5.5L2 7.8l5.5-.8z"/></svg>
+    GMP-Certified Facility
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l3 2"/></svg>
+    Same-Day Dispatch
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h14l-1 10H4L3 7z"/><path d="M8 7V5a2 2 0 014 0v2"/></svg>
+    Discreet Worldwide Shipping
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h12v10a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/><path d="M8 4V2h4v2"/></svg>
+    COA with Every Order
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="16" height="10" rx="2"/><path d="M6 6V4a4 4 0 018 0v2"/></svg>
+    Bitcoin Only
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h14M5 8V5h10v3M3 12h14M5 16h10"/></svg>
+    DHL International · DPD Switzerland
+  </div>
+</div>
+
+<!-- CATALOG -->
+<section id="catalog">
+  <div class="section-header">
+    <div class="section-eyebrow">In Stock — Ready to Ship</div>
+    <h2 class="section-title">Current Catalog</h2>
+    <p class="section-sub">All compounds are HPLC-verified and shipped with a full Certificate of Analysis. Prices in USD — Bitcoin equivalent calculated at time of invoice.</p>
+  </div>
+
+  <div class="catalog-tools" aria-label="Catalog controls">
+    <input id="catalog-search" type="search" placeholder="Search compound, category, description..." oninput="filterCatalog()">
+    <select id="catalog-category" onchange="filterCatalog()">
+      <option value="">All categories</option>
+      <option value="recovery">Recovery</option>
+      <option value="hormone">Performance</option>
+      <option value="longevity">Longevity</option>
+      <option value="combo">Stack / Supply</option>
+    </select>
+    <div class="catalog-count" id="catalog-count">Showing all compounds</div>
+  </div>
+  <div class="catalog-empty" id="catalog-empty">No matching compounds. Try a different search or send a custom inquiry.</div>
+
+  <div class="products-grid">
+
+    <!-- BPC-157 -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-recovery">Recovery</span>
+        <span class="product-tag">Body Protective Compound</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">BPC-157</div>
+      <div class="product-name">Body Protection Compound-157</div>
+      <p class="product-desc">A synthetic pentadecapeptide derived from a gastric protective protein. Widely studied for tissue healing, gut lining integrity, tendon repair, and musculoskeletal recovery mechanisms in preclinical models.</p>
+      <div class="product-specs">
+        <div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div>
+        <div class="spec"><span class="spec-label">Purity</span><span class="spec-val">&gt;99%</span></div>
+        <div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div>
+        <div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$38</span>
+          <span class="product-price-btc">₿ ~0.000369 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'BPC-157',38,0.000369)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- TB-500 -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-recovery">Recovery</span>
+        <span class="product-tag">Thymosin Beta-4 Fragment</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">TB-500</div>
+      <div class="product-name">Thymosin Beta-4 Synthetic Analogue</div>
+      <p class="product-desc">A synthetic analogue of naturally occurring Thymosin Beta-4. Research focuses on angiogenesis, actin regulation, anti-inflammatory signalling, and cellular migration in cardiac and connective tissue studies.</p>
+      <div class="product-specs">
+        <div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div>
+        <div class="spec"><span class="spec-label">Purity</span><span class="spec-val">&gt;99%</span></div>
+        <div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div>
+        <div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$54</span>
+          <span class="product-price-btc">₿ ~0.000524 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'TB-500',54,0.000524)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- GLP-1 -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-hormone">Metabolic</span>
+        <span class="product-tag">Incretin Hormone Analogue</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">GLP-1</div>
+      <div class="product-name">Glucagon-Like Peptide-1 (7-36 Amide)</div>
+      <p class="product-desc">An endogenous incretin hormone analogue studied for its roles in insulin secretion, glucagon suppression, gastric motility, and central appetite regulation. A cornerstone of metabolic disorder research worldwide.</p>
+      <div class="product-specs">
+        <div class="spec"><span class="spec-label">Amount</span><span class="spec-val">1 mg</span></div>
+        <div class="spec"><span class="spec-label">Purity</span><span class="spec-val">&gt;98%</span></div>
+        <div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div>
+        <div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−80 °C</span></div>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$89</span>
+          <span class="product-price-btc">₿ ~0.000864 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'GLP-1',89,0.000864)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- MOTS-C -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-longevity">Longevity</span>
+        <span class="product-tag">Mitochondrial Peptide</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">MOTS-C</div>
+      <div class="product-name">Mitochondrial ORF of 12S rRNA type-C</div>
+      <p class="product-desc">A mitochondria-derived regulatory peptide encoded by the 12S rRNA gene, studied for roles in mitochondrial biogenesis, insulin sensitivity, skeletal muscle metabolism, and cellular stress response — a key target in longevity research.</p>
+      <div class="product-specs">
+        <div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div>
+        <div class="spec"><span class="spec-label">Purity</span><span class="spec-val">&gt;99%</span></div>
+        <div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div>
+        <div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$72</span>
+          <span class="product-price-btc">₿ ~0.000699 BTC</span>
+        </div>
+        <span class="stock-badge low">Low Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'MOTS-C',72,0.000699)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- GHK-Cu -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-longevity">Longevity</span>
+        <span class="product-tag">Copper Peptide Complex</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">GHK-Cu</div>
+      <div class="product-name">Glycyl-L-Histidyl-L-Lysine : Copper(II)</div>
+      <p class="product-desc">A naturally occurring copper-binding tripeptide with broad biological activity. Studies document roles in wound healing, collagen synthesis, antioxidant defence, nerve growth factor expression, and genomic remodelling in ageing tissue models.</p>
+      <div class="product-specs">
+        <div class="spec"><span class="spec-label">Amount</span><span class="spec-val">200 mg</span></div>
+        <div class="spec"><span class="spec-label">Purity</span><span class="spec-val">&gt;99%</span></div>
+        <div class="spec"><span class="spec-label">Form</span><span class="spec-val">Powder</span></div>
+        <div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$32</span>
+          <span class="product-price-btc">₿ ~0.000311 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'GHK-Cu',32,0.000311)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- CJC + Ipamorelin -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-combo">Stack</span>
+        <span class="product-tag">GHRH + Ghrelin Mimetic</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">CJC-1295<br>+ Ipamorelin</div>
+      <div class="product-name">Growth Hormone Secretagogue Stack</div>
+      <p class="product-desc">A dual-pathway GH secretagogue combination. CJC-1295 (GHRH analogue with DAC modification for extended half-life) paired with Ipamorelin (selective ghrelin receptor agonist) — a well-characterised model for somatotropic axis research.</p>
+      <div class="product-specs">
+        <div class="spec"><span class="spec-label">CJC-1295</span><span class="spec-val">2 mg</span></div>
+        <div class="spec"><span class="spec-label">Ipamorelin</span><span class="spec-val">2 mg</span></div>
+        <div class="spec"><span class="spec-label">Purity</span><span class="spec-val">&gt;99%</span></div>
+        <div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$82</span>
+          <span class="product-price-btc">₿ ~0.000796 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'CJC-1295 + Ipamorelin',82,0.000796)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bacteriostatic Water -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-recovery">Reconstitution</span>
+        <span class="product-tag">Sterile Diluent</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">Bact. Water</div>
+      <div class="product-name">Bacteriostatic Water for Injection (0.9% Benzyl Alcohol)</div>
+      <p class="product-desc">Sterile water containing 0.9% benzyl alcohol as a preservative, intended for use as a diluent in reconstituting lyophilised peptides. Multi-dose vial. Essential accessory for any peptide research protocol.</p>
+      <div class="product-specs">
+        <div class="spec"><span class="spec-label">Volume</span><span class="spec-val">10 mL</span></div>
+        <div class="spec"><span class="spec-label">Preservative</span><span class="spec-val">0.9% BnOH</span></div>
+        <div class="spec"><span class="spec-label">Form</span><span class="spec-val">Sterile vial</span></div>
+        <div class="spec"><span class="spec-label">Storage</span><span class="spec-val">2–8 °C</span></div>
+      </div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$10</span>
+          <span class="product-price-btc">₿ ~0.000097 BTC</span>
+        </div>
+        <span class="stock-badge">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'Bact. Water',10,0.000097)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- Semaglutide -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-hormone">Metabolic</span>
+        <span class="product-tag">GLP-1 Agonist</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">Semaglutide</div>
+      <div class="product-name">Semaglutide (GLP-1 Receptor Agonist)</div>
+      <p class="product-desc">A long-acting GLP-1 receptor agonist with a fatty acid modification enabling once-weekly dosing. Extensively studied for its roles in glucose-dependent insulin secretion, appetite regulation, gastric emptying, and body weight modulation in metabolic disorder research.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">2 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>98%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$115</span>
+          <span class="product-price-btc">₿ ~0.001117 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'Semaglutide',115,0.001117)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Tirzepatide -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-hormone">Metabolic</span>
+        <span class="product-tag">Dual GIP/GLP-1 Agonist</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">Tirzepatide</div>
+      <div class="product-name">Tirzepatide (Dual GIP/GLP-1 Agonist)</div>
+      <p class="product-desc">A novel dual glucose-dependent insulinotropic polypeptide (GIP) and GLP-1 receptor agonist. Research demonstrates superior glycaemic control and body weight reduction versus single-receptor agonists, making it a leading compound in metabolic syndrome and obesity research.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>98%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$145</span>
+          <span class="product-price-btc">₿ ~0.001408 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'Tirzepatide',145,0.001408)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Epithalon -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-longevity">Longevity</span>
+        <span class="product-tag">Telomere Peptide</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">Epithalon</div>
+      <div class="product-name">Epithalon (Epitalon) Tetrapeptide</div>
+      <p class="product-desc">A synthetic tetrapeptide (Ala-Glu-Asp-Gly) derived from the pineal gland peptide epithalamin. Research focuses on telomerase activation, telomere elongation, antioxidant activity, and circadian rhythm regulation — a cornerstone compound in longevity and ageing biology.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">10 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>99%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$48</span>
+          <span class="product-price-btc">₿ ~0.000466 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'Epithalon',48,0.000466)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- AOD-9604 -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-recovery">Recovery</span>
+        <span class="product-tag">Fat Loss Peptide</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">AOD-9604</div>
+      <div class="product-name">AOD-9604 (Anti-Obesity Drug Fragment)</div>
+      <p class="product-desc">A modified fragment of human growth hormone (hGH176-191) with the lipolytic properties of hGH without affecting IGF-1 levels or insulin sensitivity. Studied for adipose tissue metabolism, fat oxidation, and cartilage/bone repair mechanisms in preclinical models.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>98%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$52</span>
+          <span class="product-price-btc">₿ ~0.000505 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'AOD-9604',52,0.000505)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Selank -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-longevity">Nootropic</span>
+        <span class="product-tag">Anxiolytic Peptide</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">Selank</div>
+      <div class="product-name">Selank (Tuftsin Analogue)</div>
+      <p class="product-desc">A synthetic heptapeptide analogue of the endogenous immunomodulatory peptide tuftsin. Research documents anxiolytic, nootropic, and immunomodulatory effects via modulation of GABAergic, serotonergic, and dopaminergic systems without dependence or sedation in animal models.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>99%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$44</span>
+          <span class="product-price-btc">₿ ~0.000427 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'Selank',44,0.000427)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Semax -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-longevity">Nootropic</span>
+        <span class="product-tag">Neuropeptide</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">Semax</div>
+      <div class="product-name">Semax (ACTH 4-7 Pro-Gly-Pro)</div>
+      <p class="product-desc">A synthetic analogue of ACTH(4-7) with a C-terminal Pro-Gly-Pro extension for improved stability. Studied for BDNF and NGF upregulation, neuroprotection, cognitive enhancement, and modulation of dopaminergic transmission in CNS research models.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>99%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$46</span>
+          <span class="product-price-btc">₿ ~0.000447 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'Semax',46,0.000447)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- PT-141 -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-hormone">Performance</span>
+        <span class="product-tag">Melanocortin Agonist</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">PT-141</div>
+      <div class="product-name">PT-141 (Bremelanotide)</div>
+      <p class="product-desc">A synthetic melanocortin receptor agonist (MC3R/MC4R) derived from Melanotan II. Unlike PDE5 inhibitors, PT-141 acts centrally via hypothalamic pathways. Research focuses on sexual dysfunction mechanisms, melanocortin signalling, and CNS-mediated arousal pathways.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">10 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>98%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$62</span>
+          <span class="product-price-btc">₿ ~0.000602 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'PT-141',62,0.000602)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Ipamorelin -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-hormone">Performance</span>
+        <span class="product-tag">GH Secretagogue</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">Ipamorelin</div>
+      <div class="product-name">Ipamorelin (Selective Ghrelin Mimetic)</div>
+      <p class="product-desc">A selective, third-generation growth hormone secretagogue and ghrelin receptor agonist. Distinguished by its high GH specificity with minimal effect on cortisol, prolactin, or ACTH. Widely used as a standalone or in combination protocols for somatotropic axis research.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>99%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$44</span>
+          <span class="product-price-btc">₿ ~0.000427 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'Ipamorelin',44,0.000427)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Hexarelin -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-hormone">Performance</span>
+        <span class="product-tag">GH Secretagogue</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">Hexarelin</div>
+      <div class="product-name">Hexarelin (Examorelin)</div>
+      <p class="product-desc">A potent synthetic hexapeptide growth hormone secretagogue and ghrelin receptor agonist. Among the most potent GHRPs studied, Hexarelin also demonstrates cardioprotective properties independent of GH release, making it relevant to both endocrine and cardiovascular research.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">5 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>99%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Lyophilised</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$52</span>
+          <span class="product-price-btc">₿ ~0.000505 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'Hexarelin',52,0.000505)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- NAD+ -->
+    <div class="product-card">
+      <div class="product-card-top">
+        <span class="product-badge badge-longevity">Longevity</span>
+        <span class="product-tag">NAD+ Precursor</span>
+      </div>
+      <div style="margin-bottom:0.5rem;"><span class="purity-hplc-badge">&ge;98% HPLC Verified</span></div>
+      <div class="product-code">NAD+</div>
+      <div class="product-name">β-Nicotinamide Adenine Dinucleotide</div>
+      <p class="product-desc">A critical coenzyme in cellular energy metabolism, DNA repair, and sirtuin activation. NAD+ research encompasses mitochondrial biogenesis, age-related metabolic decline, neurodegeneration, and inflammation pathways. A foundational molecule in longevity and metabolic biology.</p>
+      <div class="product-specs"><div class="spec"><span class="spec-label">Amount</span><span class="spec-val">500 mg</span></div><div class="spec"><span class="spec-label">Purity</span><span class="spec-val">>98%</span></div><div class="spec"><span class="spec-label">Form</span><span class="spec-val">Powder</span></div><div class="spec"><span class="spec-label">Storage</span><span class="spec-val">−20 °C</span></div></div>
+      <div class="product-footer">
+        <div class="price-block">
+          <span class="price-label">Price (USD)</span>
+          <span class="product-price">$68</span>
+          <span class="product-price-btc">₿ ~0.00066 BTC</span>
+        </div>
+        <span class="stock-badge ">In Stock</span>
+      </div>
+      <div class="product-controls">
+        <div class="qty-row">
+          <button class="qty-btn" onclick="adjQty(this,-1)">−</button>
+          <input class="qty-val" type="number" value="1" min="1" max="99" readonly>
+          <button class="qty-btn" onclick="adjQty(this,1)">+</button>
+        </div>
+        <button class="add-to-inquiry-btn" onclick="addToTray(this,'NADplus',68,0.00066)">
+          <span>Add to Inquiry</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- COMING SOON -->
+    <div class="coming-soon-card">
+      <div class="coming-soon-icon">+</div>
+      <h4>More Compounds<br>Coming Soon</h4>
+      <p>We are continuously expanding our catalog with novel research-grade peptides. Sign up to be notified when new compounds arrive.</p>
+      <button class="notify-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Notify Me →</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- VIALS SHOWCASE -->
+<section id="vials-showcase">
+  <div class="section-header">
+    <div class="section-eyebrow">Product Integrity</div>
+    <h2 class="section-title">Every vial. Our name on it.</h2>
+    <p class="section-sub">HelvionSwissChem branding appears on every unit we ship — HPLC-verified, sealed under inert atmosphere, and dispatched with a batch-specific COA.</p>
+  </div>
+  <div class="vials-grid">
+    <div class="vial-card">
+      <div class="vial-illustration">
+        <svg width="70" height="180" viewBox="0 0 70 180" fill="none">
+          <rect x="10" y="30" width="50" height="140" rx="10" fill="url(#vsc1)"/>
+          <rect x="14" y="38" width="12" height="124" rx="5" fill="white" opacity="0.14"/>
+          <rect x="6" y="16" width="58" height="22" rx="5" fill="#B8973B" opacity="0.9"/>
+          <rect x="16" y="10" width="38" height="12" rx="4" fill="#D4AE5A"/>
+          <rect x="12" y="75" width="46" height="60" rx="3" fill="white" opacity="0.93"/>
+          <rect x="25" y="81" width="20" height="4" rx="1" fill="#CC2229" opacity="0.85"/>
+          <rect x="31" y="78" width="8" height="10" rx="1" fill="#CC2229" opacity="0.85"/>
+          <rect x="14" y="97" width="42" height="2.5" rx="1" fill="#1C1C1E" opacity="0.45"/>
+          <rect x="16" y="103" width="38" height="2" rx="1" fill="#1C1C1E" opacity="0.3"/>
+          <rect x="18" y="109" width="34" height="2" rx="1" fill="#1C1C1E" opacity="0.22"/>
+          <rect x="14" y="117" width="42" height="2.5" rx="1" fill="#B8973B" opacity="0.7"/>
+          <rect x="10" y="150" width="50" height="20" rx="0 0 10 10" fill="#B8973B" opacity="0.16"/>
+          <defs><linearGradient id="vsc1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#e0d8c4"/><stop offset="100%" stop-color="#f5f2ec"/></linearGradient></defs>
+        </svg>
+      </div>
+      <h4>Lyophilised Peptides</h4>
+      <p>Freeze-dried under inert atmosphere for maximum stability. Each vial sealed with foil-lined rubber stopper.</p>
+      <div class="vial-badge">Gold Seal — Lyophilised</div>
+    </div>
+    <div class="vial-card">
+      <div class="vial-illustration">
+        <svg width="70" height="180" viewBox="0 0 70 180" fill="none">
+          <rect x="10" y="30" width="50" height="140" rx="10" fill="url(#vsc2)"/>
+          <rect x="14" y="38" width="12" height="124" rx="5" fill="white" opacity="0.18"/>
+          <rect x="6" y="16" width="58" height="22" rx="5" fill="#1C1C1E" opacity="0.9"/>
+          <rect x="16" y="10" width="38" height="12" rx="4" fill="#3A3A3C"/>
+          <rect x="12" y="75" width="46" height="60" rx="3" fill="white" opacity="0.95"/>
+          <rect x="25" y="81" width="20" height="4" rx="1" fill="#CC2229" opacity="0.85"/>
+          <rect x="31" y="78" width="8" height="10" rx="1" fill="#CC2229" opacity="0.85"/>
+          <rect x="14" y="97" width="42" height="2.5" rx="1" fill="#1C1C1E" opacity="0.45"/>
+          <rect x="16" y="103" width="38" height="2" rx="1" fill="#1C1C1E" opacity="0.3"/>
+          <rect x="18" y="109" width="34" height="2" rx="1" fill="#1D6B3A" opacity="0.6"/>
+          <rect x="14" y="117" width="42" height="2.5" rx="1" fill="#B8973B" opacity="0.7"/>
+          <rect x="10" y="150" width="50" height="20" rx="0 0 10 10" fill="#1C1C1E" opacity="0.2"/>
+          <defs><linearGradient id="vsc2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2a2a2c"/><stop offset="100%" stop-color="#3c3c3e"/></linearGradient></defs>
+        </svg>
+      </div>
+      <h4>Powder Compounds</h4>
+      <p>Bulk powders for high-volume research. Weighed to ±0.5 mg precision, nitrogen-purged, and heat-sealed.</p>
+      <div class="vial-badge">Charcoal Cap — Powder</div>
+    </div>
+    <div class="vial-card">
+      <div class="vial-illustration">
+        <svg width="70" height="180" viewBox="0 0 70 180" fill="none">
+          <rect x="10" y="30" width="50" height="140" rx="10" fill="url(#vsc3)"/>
+          <rect x="14" y="38" width="12" height="124" rx="5" fill="white" opacity="0.22"/>
+          <rect x="6" y="16" width="58" height="22" rx="5" fill="#1D6B3A" opacity="0.9"/>
+          <rect x="16" y="10" width="38" height="12" rx="4" fill="#2e8a4f"/>
+          <rect x="12" y="75" width="46" height="60" rx="3" fill="white" opacity="0.95"/>
+          <rect x="25" y="81" width="20" height="4" rx="1" fill="#CC2229" opacity="0.85"/>
+          <rect x="31" y="78" width="8" height="10" rx="1" fill="#CC2229" opacity="0.85"/>
+          <rect x="14" y="97" width="42" height="2.5" rx="1" fill="#1C1C1E" opacity="0.45"/>
+          <rect x="16" y="103" width="38" height="2" rx="1" fill="#1D6B3A" opacity="0.5"/>
+          <rect x="18" y="109" width="34" height="2" rx="1" fill="#1C1C1E" opacity="0.22"/>
+          <rect x="14" y="117" width="42" height="2.5" rx="1" fill="#B8973B" opacity="0.7"/>
+          <!-- Water level -->
+          <rect x="10" y="140" width="50" height="30" rx="0 0 10 10" fill="#1D6B3A" opacity="0.12"/>
+          <line x1="10" y1="140" x2="60" y2="140" stroke="#1D6B3A" stroke-width="1" opacity="0.3"/>
+          <defs><linearGradient id="vsc3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#d0e8d8"/><stop offset="100%" stop-color="#e8f4ec"/></linearGradient></defs>
+        </svg>
+      </div>
+      <h4>Bacteriostatic Water</h4>
+      <p>0.9% benzyl alcohol sterile diluent, pharmacy-grade. Supplied in multi-dose vials for protocol flexibility.</p>
+      <div class="vial-badge">Green Cap — Sterile Water</div>
+    </div>
+    <div class="vial-card">
+      <div class="vial-illustration">
+        <svg width="70" height="180" viewBox="0 0 70 180" fill="none">
+          <!-- Stack vials icon -->
+          <rect x="16" y="50" width="38" height="120" rx="8" fill="url(#vsc4)"/>
+          <rect x="20" y="58" width="9" height="104" rx="4" fill="white" opacity="0.14"/>
+          <rect x="12" y="38" width="46" height="18" rx="4" fill="#B8973B" opacity="0.9"/>
+          <rect x="20" y="33" width="30" height="10" rx="3" fill="#D4AE5A"/>
+          <rect x="18" y="90" width="34" height="50" rx="3" fill="white" opacity="0.92"/>
+          <rect x="28" y="96" width="14" height="3" rx="1" fill="#CC2229"/>
+          <rect x="33" y="93" width="5" height="8" rx="1" fill="#CC2229"/>
+          <rect x="19" y="107" width="32" height="2" rx="1" fill="#1C1C1E" opacity="0.45"/>
+          <rect x="21" y="113" width="28" height="2" rx="1" fill="#1C1C1E" opacity="0.3"/>
+          <rect x="19" y="119" width="32" height="2.5" rx="1" fill="#B8973B" opacity="0.7"/>
+          <!-- Stack indicator lines -->
+          <line x1="9" y1="38" x2="9" y2="170" stroke="#B8973B" stroke-width="0.5" opacity="0.25"/>
+          <line x1="61" y1="38" x2="61" y2="170" stroke="#B8973B" stroke-width="0.5" opacity="0.25"/>
+          <defs><linearGradient id="vsc4" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#e4dcc6"/><stop offset="100%" stop-color="#f2ede2"/></linearGradient></defs>
+        </svg>
+      </div>
+      <h4>Research Stacks</h4>
+      <p>Multi-compound bundles co-packed, individually labelled, and shipped with a single combined COA for convenience.</p>
+      <div class="vial-badge">Bundle — Multi-COA</div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATES -->
+<section id="certificates">
+  <div class="section-header">
+    <div class="section-eyebrow">Documentation</div>
+    <h2 class="section-title">Certificates researchers can check before ordering.</h2>
+    <p class="section-sub">Each batch is documented with analytical records designed for lab procurement, storage logs, and internal quality review.</p>
+  </div>
+  <div class="certs-grid">
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/><path d="M9.5 13h5M9.5 16h5M9.5 10h2"/></svg>
+      </div>
+      <span class="cert-badge">Batch COA Included</span>
+      <h4>Certificate of Analysis</h4>
+      <p>Batch-specific COA with compound name, lot number, assay method, purity result, and release date for traceable research documentation.</p>
+      <div class="cert-mock">
+        Lot: <span>HSC-26-042</span><br>
+        Purity: <span>&ge;99% HPLC</span><br>
+        Status: <span>Released</span>
+      </div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19c4-8 6-8 8-5s4 3 8-9"/><path d="M4 19h16"/><path d="M4 5v14"/></svg>
+      </div>
+      <span class="cert-badge">HPLC Verification</span>
+      <h4>Chromatogram Record</h4>
+      <p>Purity testing is presented with a chromatogram-style analytical summary so the headline percentage is backed by visible method data.</p>
+      <div class="cert-mock">
+        Method: <span>RP-HPLC</span><br>
+        Peak Area: <span>99.28%</span><br>
+        Review: <span>QC Passed</span>
+      </div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M9 12l2 2 4-5"/></svg>
+      </div>
+      <span class="cert-badge">Packaging Control</span>
+      <h4>Seal & Storage Record</h4>
+      <p>Orders include storage guidance and packaging notes covering lyophilised handling, temperature recommendations, and sealed vial condition.</p>
+      <div class="cert-mock">
+        Seal: <span>Intact</span><br>
+        Storage: <span>-20&nbsp;&deg;C</span><br>
+        Label: <span>Verified</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BITCOIN PAYMENT -->
+<section id="payment">
+  <div class="btc-inner">
+    <div class="btc-left">
+      <div class="btc-eyebrow">Secure · Private · Global</div>
+      <h2 class="btc-title">Bitcoin is our only accepted payment method</h2>
+      <p class="btc-desc">We exclusively accept Bitcoin (BTC) for all orders — ensuring fast, borderless, and private transactions for researchers worldwide with no banks or third-party interference.</p>
+      <div class="btc-steps">
+        <div class="btc-step">
+          <span class="btc-step-num">01</span>
+          <p class="btc-step-text"><strong>Submit your inquiry</strong> via the contact form or email with the compound and quantity needed.</p>
+        </div>
+        <div class="btc-step">
+          <span class="btc-step-num">02</span>
+          <p class="btc-step-text"><strong>Receive a quote</strong> with the exact BTC amount at current market rate, plus our wallet address.</p>
+        </div>
+        <div class="btc-step">
+          <span class="btc-step-num">03</span>
+          <p class="btc-step-text"><strong>Send payment</strong> from any wallet. After 1 on-chain confirmation, we process and dispatch your order.</p>
+        </div>
+        <div class="btc-step">
+          <span class="btc-step-num">04</span>
+          <p class="btc-step-text"><strong>Receive your order</strong> with full COA documentation, discreetly packaged and cold-shipped worldwide.</p>
+        </div>
+      </div>
+    </div>
+    <div class="btc-right">
+      <div class="btc-logo-row">
+        <div class="btc-symbol">₿</div>
+        <div>
+          <span class="btc-brand-name">Bitcoin (BTC)</span>
+          <span class="btc-brand-sub">Only accepted currency</span>
+        </div>
+      </div>
+      <div class="btc-features">
+        <div class="btc-feature">No credit card or bank transfer required</div>
+        <div class="btc-feature">Orders confirmed upon 1 on-chain confirmation</div>
+        <div class="btc-feature">Live BTC/USD rate applied at time of invoice</div>
+        <div class="btc-feature">All major wallets supported (Ledger, Trezor, Exodus, etc.)</div>
+        <div class="btc-feature">Private, irreversible, globally accessible</div>
+        <div class="btc-feature">No geographic payment restrictions</div>
+      </div>
+      <div class="btc-note">
+        BTC wallet address provided upon order confirmation. HelvionSwissChem does not store or share any payment data.
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <div class="section-eyebrow">Why HelvionSwissChem</div>
+    <h2 class="section-title">Science without compromise</h2>
+    <p class="section-sub">Every compound we produce is synthesised, tested, and documented under strict quality frameworks developed over years of precision biochemistry.</p>
+  </div>
+  <div class="about-grid">
+    <div class="about-col">
+      <h3>Swiss Laboratory Standards</h3>
+      <p>Our synthesis facility in Switzerland operates under GMP-aligned protocols with continuous environmental monitoring, solvent traceability, and validated HPLC-MS analysis pipelines. Each batch is independently archived for five years.</p>
+      <ul>
+        <li>Solid-phase peptide synthesis (SPPS)</li>
+        <li>Reverse-phase HPLC purification</li>
+        <li>ESI-MS mass spectrometry verification</li>
+        <li>Endotoxin testing (LAL)</li>
+        <li>Lyophilisation under inert atmosphere</li>
+      </ul>
+    </div>
+    <div class="about-col">
+      <h3>Documentation & Traceability</h3>
+      <p>Every order ships with a full Certificate of Analysis including HPLC chromatogram, mass spectrum, sequencing confirmation, and batch-specific purity data. Transparency is the foundation of credible research.</p>
+      <ul>
+        <li>Certificate of Analysis (COA) per batch</li>
+        <li>HPLC + MS data included</li>
+        <li>Full chain-of-custody records</li>
+        <li>Research-use declaration required</li>
+        <li>Bulk and institutional pricing available</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-header">
+    <div class="section-eyebrow">From Synthesis to Delivery</div>
+    <h2 class="section-title">Our quality process</h2>
+    <p class="section-sub">A rigorous four-stage pipeline ensures every vial meets the highest standards of purity and documentation before leaving our facility.</p>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>Solid-Phase Synthesis</h4>
+      <p>Peptides are assembled residue-by-residue using automated Fmoc-SPPS on validated resin platforms, with in-process coupling efficiency monitoring throughout.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>Purification</h4>
+      <p>Crude product undergoes preparative reverse-phase HPLC, removing truncated sequences, deletion analogues, and synthesis by-products to achieve &gt;98–99% purity.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>Analytical Verification</h4>
+      <p>Each batch undergoes analytical HPLC re-injection and ESI-MS confirmation. Identity, purity, and molecular weight are verified against specification and fully recorded.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h4>Lyophilisation & Dispatch</h4>
+      <p>Verified material is lyophilised, filled under inert atmosphere, sealed with full traceability data, and dispatched same-day (orders before 12 PM EST, Mon–Fri). We ship internationally via <strong>DHL</strong> and domestically within Switzerland via <strong>DPD Switzerland</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SHIPPING -->
+<section id="shipping">
+  <div class="section-header">
+    <div class="section-eyebrow">Logistics</div>
+    <h2 class="section-title">Shipping Partners</h2>
+    <p class="section-sub">We work with world-class carriers to ensure your order arrives safely and on time. Orders placed before 12 PM EST, Monday to Friday, ship the same day.</p>
+  </div>
+  <div class="shipping-grid">
+    <div class="shipping-card">
+      <div class="shipping-card-logo">✈ International</div>
+      <h4>DHL Express</h4>
+      <p>All international shipments are dispatched via DHL Express — providing fast, reliable, trackable delivery to research institutions, universities, and laboratories worldwide. Discreet packaging with full traceability from our Zürich facility to your door.</p>
+    </div>
+    <div class="shipping-card">
+      <div class="shipping-card-logo">🇨🇭 Domestic Switzerland</div>
+      <h4>DPD Switzerland</h4>
+      <p>Swiss domestic orders are fulfilled via DPD Switzerland, offering next-day delivery across the country with real-time tracking. Ideal for local institutions and research groups requiring rapid turnaround of in-stock compounds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-header">
+    <div class="section-eyebrow">Researcher FAQ</div>
+    <h2 class="section-title">Answers before you place an inquiry.</h2>
+    <p class="section-sub">Clear handling, documentation, shipping, and payment details for research teams reviewing HelvionSwissChem.</p>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" type="button">Are these compounds for research use only?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="faq-a"><strong>Yes.</strong> HelvionSwissChem products are supplied strictly for in vitro laboratory research. They are not for human use, veterinary use, diagnostic use, or resale to individuals.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button">Do orders include HPLC reports and certificates?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="faq-a">Each dispatched batch includes a Certificate of Analysis with batch identity, purity, and analytical verification. COA samples can be requested before ordering.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button">How should lyophilised peptides be stored?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="faq-a">For long-term storage, keep lyophilised material sealed, dry, protected from light, and stored at <strong>-20&nbsp;&deg;C</strong>. Avoid repeated warming cycles where possible.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button">Do you provide reconstitution guidance?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="faq-a">We can provide research handling notes, including solvent compatibility and storage considerations. Protocol selection remains the responsibility of the qualified laboratory or institution.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button">When do orders ship?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="faq-a">In-stock orders placed before <strong>12 PM EST, Monday to Friday</strong>, are prepared for same-day dispatch after payment confirmation. International orders ship via DHL, and domestic Swiss orders ship via DPD Switzerland.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button">How does Bitcoin payment work?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="faq-a">The checkout calculates the BTC equivalent using a live BTC/USD rate. After you submit shipping details, you receive the exact wallet address and amount, then paste your TXID for verification.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button">Do you handle customs or import requirements?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="faq-a">We provide accurate research-use documentation for shipment. The receiving laboratory is responsible for confirming local import permissions, customs requirements, and institutional compliance.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-header">
+      <div class="section-eyebrow">Get In Touch</div>
+      <h2 class="section-title">Request a quote or COA sample</h2>
+      <p class="section-sub">Reach us by email, Telegram, or the form below. We respond within one business day. All orders are settled via Bitcoin.</p>
+    </div>
+
+    <div class="contact-channels">
+      <a class="contact-channel-box" href="mailto:HelvionSwissChem@protonmail.com">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="16" height="12" rx="2"/><path d="M2 6l8 6 8-6"/></svg>
+        <span class="ch-label">HelvionSwissChem@protonmail.com</span>
+      </a>
+      <a class="contact-channel-box" href="https://t.me/HelvionSwissChem" target="_blank" rel="noopener">
+        <span class="ch-icon">✈</span>
+        <span class="ch-label">@HelvionSwissChem on Telegram</span>
+      </a>
+    </div>
+
+    <form class="contact-form" id="contact-form" action="https://formspree.io/f/xwvzkwyk" method="POST" onsubmit="submitContactForm(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" id="cf-fname" name="first_name" placeholder="Dr. James" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" id="cf-lname" name="last_name" placeholder="Brennan" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" id="cf-email" name="email" placeholder="research@institution.edu" required>
+        </div>
+        <div class="form-group">
+          <label>Telegram Username (optional)</label>
+          <input type="text" id="cf-telegram" name="telegram" placeholder="@YourUsername">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Organisation / Institution</label>
+        <input type="text" id="cf-org" name="organisation" placeholder="University or Company name">
+      </div>
+      <div class="form-group">
+        <label>Compound of Interest</label>
+        <select id="cf-compound" name="compound">
+          <option value="">— Select a compound —</option>
+          <option>BPC-157 — $38 (₿ ~0.000369 BTC)</option>
+          <option>TB-500 — $54 (₿ ~0.000524 BTC)</option>
+          <option>GLP-1 (7-36 Amide) — $89 (₿ ~0.000864 BTC)</option>
+          <option>MOTS-C — $72 (₿ ~0.000699 BTC)</option>
+          <option>GHK-Cu — $32 (₿ ~0.000311 BTC)</option>
+          <option>CJC-1295 + Ipamorelin Stack — $82 (₿ ~0.000796 BTC)</option>
+          <option>Bacteriostatic Water 10mL — $10 (₿ ~0.000097 BTC)</option>
+          <option>Semaglutide — $115 (₿ ~0.001117 BTC)</option>
+          <option>Tirzepatide — $145 (₿ ~0.001408 BTC)</option>
+          <option>Epithalon — $48 (₿ ~0.000466 BTC)</option>
+          <option>AOD-9604 — $52 (₿ ~0.000505 BTC)</option>
+          <option>Selank — $44 (₿ ~0.000427 BTC)</option>
+          <option>Semax — $46 (₿ ~0.000447 BTC)</option>
+          <option>PT-141 (Bremelanotide) — $62 (₿ ~0.000602 BTC)</option>
+          <option>Ipamorelin — $44 (₿ ~0.000427 BTC)</option>
+          <option>Hexarelin — $52 (₿ ~0.000505 BTC)</option>
+          <option>NAD+ — $68 (₿ ~0.000660 BTC)</option>
+          <option>Multiple / Custom Request</option>
+          <option>Notify me of new compounds</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="cf-message" name="message" rows="4" placeholder="Describe your research requirements, quantities, or any questions..."></textarea>
+      </div>
+      <div class="btc-payment-note">
+        <span class="btc-icon">₿</span>
+        <span>We exclusively accept <strong>Bitcoin (BTC)</strong> for all orders. Once confirmed, we send you an invoice with the current BTC equivalent and our wallet address for payment.</span>
+      </div>
+      <button type="submit" class="form-submit" id="cf-submit">Send Inquiry</button>
+      <div id="cf-status" style="display:none;margin-top:0.75rem;padding:0.9rem 1.1rem;border-radius:2px;font-size:13px;font-weight:500;"></div>
+      <div class="disclaimer">
+        <strong>Research Use Only.</strong> All compounds offered by HelvionSwissChem are intended strictly for in-vitro research and laboratory use by qualified professionals. They are not approved for human or veterinary use and are not intended to diagnose, treat, cure, or prevent any condition or disease. By submitting this form you confirm that you are purchasing for legitimate scientific purposes in full compliance with all applicable laws in your jurisdiction.
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-tagline-block">
+    <p class="footer-tagline-main">
+      Reliable and innovative research with our top-grade materials and novel compounds tailored to lead the competitive research industry. Choose quality. Choose <strong>HelvionSwissChem</strong>.
+    </p>
+    <p class="footer-shipping-note">
+      Orders placed before 12 PM EST, Monday to Friday, ship the same day · DHL for international · DPD Switzerland for domestic
+    </p>
+  </div>
+
+  <div class="footer-top">
+    <div>
+      <span class="footer-brand">Helvion<span>Chem</span></span>
+      <p class="footer-tagline-short">Swiss-synthesised research peptides for the global scientific community. Purity, provenance, precision.</p>
+      <div class="footer-email-row">
+        ✉ <a href="mailto:HelvionSwissChem@protonmail.com">HelvionSwissChem@protonmail.com</a>
+      </div>
+      <div class="footer-email-row" style="margin-top:0.4rem">
+        ✈ <a href="https://t.me/HelvionSwissChem" target="_blank" rel="noopener">@HelvionSwissChem (Telegram)</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h5>Catalog</h5>
+      <ul>
+        <li>BPC-157 — $38 <span style="color:var(--btc);font-size:10px">₿ ~0.000369</span></li>
+        <li>TB-500 — $54 <span style="color:var(--btc);font-size:10px">₿ ~0.000524</span></li>
+        <li>GLP-1 — $89 <span style="color:var(--btc);font-size:10px">₿ ~0.000864</span></li>
+        <li>MOTS-C — $72 <span style="color:var(--btc);font-size:10px">₿ ~0.000699</span></li>
+        <li>GHK-Cu — $32 <span style="color:var(--btc);font-size:10px">₿ ~0.000311</span></li>
+        <li>CJC-1295 + Ipamorelin — $82 <span style="color:var(--btc);font-size:10px">₿ ~0.000796</span></li>
+        <li>Bact. Water 10mL — $10 <span style="color:var(--btc);font-size:10px">₿ ~0.000097</span></li>
+        <li>Semaglutide — $115 <span style="color:var(--btc);font-size:10px">₿ ~0.001117</span></li>
+        <li>Tirzepatide — $145 <span style="color:var(--btc);font-size:10px">₿ ~0.001408</span></li>
+        <li>Epithalon — $48 <span style="color:var(--btc);font-size:10px">₿ ~0.000466</span></li>
+        <li>AOD-9604 — $52 <span style="color:var(--btc);font-size:10px">₿ ~0.000505</span></li>
+        <li>Selank — $44 <span style="color:var(--btc);font-size:10px">₿ ~0.000427</span></li>
+        <li>Semax — $46 <span style="color:var(--btc);font-size:10px">₿ ~0.000447</span></li>
+        <li>PT-141 — $62 <span style="color:var(--btc);font-size:10px">₿ ~0.000602</span></li>
+        <li>Ipamorelin — $44 <span style="color:var(--btc);font-size:10px">₿ ~0.000427</span></li>
+        <li>Hexarelin — $52 <span style="color:var(--btc);font-size:10px">₿ ~0.000505</span></li>
+        <li>NAD+ — $68 <span style="color:var(--btc);font-size:10px">₿ ~0.000660</span></li>
+        <li class="coming">More compounds coming soon…</li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li>About Us</li>
+        <li>Who We Are</li>
+        <li>Our Laboratory</li>
+        <li>Independent Test Results</li>
+        <li>Wholesale Price List</li>
+        <li>Rewards &amp; Referrals</li>
+        <li>Terms &amp; Conditions</li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h5>Help</h5>
+      <ul>
+        <li><a href="#contact">Contact Us</a></li>
+        <li><a href="#contact">My Account</a></li>
+        <li>Track Your Order</li>
+        <li><a href="#shipping">Shipping Info</a></li>
+        <li><a href="#faq">FAQs</a></li>
+        <li><a href="#calculator">Peptide Calculator</a></li>
+        <li><a href="#payment">Bitcoin Payment Guide</a></li>
+        <li>Affiliate Program</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2025 HelvionSwissChem. Zürich, Switzerland. All rights reserved.</span>
+    <span>For research use only — not for human consumption.</span>
+  </div>
+</footer>
+
+<!-- PEPTIDE CALCULATOR -->
+<section id="calculator">
+  <div class="section-header">
+    <div class="section-eyebrow">Research Tool</div>
+    <h2 class="section-title">Peptide Reconstitution Calculator</h2>
+    <p class="section-sub">Calculate the exact volume of bacteriostatic water needed to achieve your desired concentration. Essential for accurate dosing in preclinical research protocols.</p>
+  </div>
+  <div class="calc-wrapper">
+    <p style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);font-weight:500;margin-bottom:0.75rem;">Quick presets</p>
+    <div class="calc-presets">
+      <button class="calc-preset" onclick="setPreset('BPC-157',5,'mg',500)">BPC-157 5mg</button>
+      <button class="calc-preset" onclick="setPreset('TB-500',5,'mg',500)">TB-500 5mg</button>
+      <button class="calc-preset" onclick="setPreset('GLP-1',1,'mg',100)">GLP-1 1mg</button>
+      <button class="calc-preset" onclick="setPreset('MOTS-C',5,'mg',500)">MOTS-C 5mg</button>
+      <button class="calc-preset" onclick="setPreset('GHK-Cu',200,'mg',1000)">GHK-Cu 200mg</button>
+      <button class="calc-preset" onclick="setPreset('CJC-1295',2,'mg',200)">CJC-1295 2mg</button>
+      <button class="calc-preset" onclick="setPreset('Semaglutide',2,'mg',200)">Semaglutide 2mg</button>
+      <button class="calc-preset" onclick="setPreset('Tirzepatide',5,'mg',500)">Tirzepatide 5mg</button>
+      <button class="calc-preset" onclick="setPreset('Epithalon',10,'mg',1000)">Epithalon 10mg</button>
+      <button class="calc-preset" onclick="setPreset('PT-141',10,'mg',1000)">PT-141 10mg</button>
+      <button class="calc-preset" onclick="setPreset('Ipamorelin',5,'mg',500)">Ipamorelin 5mg</button>
+    </div>
+    <div class="calc-grid">
+      <div class="calc-group">
+        <label>Peptide / Compound</label>
+        <input type="text" id="calc-compound" placeholder="e.g. BPC-157">
+      </div>
+      <div class="calc-group">
+        <label>Vial Amount</label>
+        <div style="display:flex;gap:8px">
+          <input type="number" id="calc-amount" placeholder="5" min="0" step="any" style="flex:1">
+          <select id="calc-unit" style="width:80px">
+            <option value="mg">mg</option>
+            <option value="mcg">mcg</option>
+          </select>
+        </div>
+      </div>
+      <div class="calc-group">
+        <label>Desired Concentration</label>
+        <div style="display:flex;gap:8px">
+          <input type="number" id="calc-conc" placeholder="500" min="0" step="any" style="flex:1">
+          <select id="calc-conc-unit" style="width:100px">
+            <option value="mcg/mL">mcg/mL</option>
+            <option value="mg/mL">mg/mL</option>
+            <option value="IU/mL">IU/mL</option>
+          </select>
+        </div>
+      </div>
+      <div class="calc-group">
+        <label>Desired Dose per Injection</label>
+        <div style="display:flex;gap:8px">
+          <input type="number" id="calc-dose" placeholder="250" min="0" step="any" style="flex:1">
+          <select id="calc-dose-unit" style="width:100px">
+            <option value="mcg">mcg</option>
+            <option value="mg">mg</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="runCalc()">Calculate →</button>
+    <div class="calc-result" id="calc-result">
+      <h4 id="calc-compound-out">Results</h4>
+      <div class="calc-result-grid">
+        <div class="calc-result-item">
+          <span class="calc-result-label">Bact. Water to Add</span>
+          <span class="calc-result-val" id="cr-water">—</span>
+        </div>
+        <div class="calc-result-item">
+          <span class="calc-result-label">Final Concentration</span>
+          <span class="calc-result-val" id="cr-conc">—</span>
+        </div>
+        <div class="calc-result-item">
+          <span class="calc-result-label">Volume per Dose</span>
+          <span class="calc-result-val" id="cr-vol">—</span>
+        </div>
+        <div class="calc-result-item">
+          <span class="calc-result-label">Doses per Vial</span>
+          <span class="calc-result-val" id="cr-doses">—</span>
+        </div>
+      </div>
+      <p class="calc-result-sub" id="cr-note"></p>
+    </div>
+  </div>
+</section>
+
+<!-- INQUIRY TRAY -->
+<div id="inquiry-tray">
+  <div class="tray-panel" id="tray-panel">
+    <h4>Inquiry List</h4>
+    <div id="tray-items"><p class="tray-empty">No items yet.</p></div>
+    <div id="tray-totals" style="display:none">
+      <div class="tray-total">
+        <span>Total</span>
+        <span id="tray-total-usd">$0</span>
+      </div>
+      <div class="tray-total-btc" id="tray-total-btc"></div>
+      <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.6rem;">
+        <input id="tray-email" type="email" placeholder="Your email *" style="font-family:'Figtree',sans-serif;font-size:13px;padding:9px 12px;border:0.5px solid rgba(28,28,30,0.2);border-radius:2px;outline:none;color:#1C1C1E;">
+        <input id="tray-telegram" type="text" placeholder="Telegram @username (optional)" style="font-family:'Figtree',sans-serif;font-size:13px;padding:9px 12px;border:0.5px solid rgba(28,28,30,0.2);border-radius:2px;outline:none;color:#1C1C1E;">
+      </div>
+    </div>
+    <button class="tray-cta" onclick="openShippingModal()">Proceed to Checkout →</button>
+    <div id="tray-status" style="display:none;margin-top:0.6rem;font-size:12px;text-align:center;padding:0.5rem;border-radius:2px;"></div>
+  </div>
+  <button class="tray-btn" onclick="toggleTray()">
+    <span>Inquiry List</span>
+    <span class="tray-count" id="tray-count">0</span>
+  </button>
+</div>
+
+<script>
+const FORMSPREE_ID = 'xwvzkwyk';
+const TELEGRAM_BOT_TOKEN = '8888160536:AAGgj9KM2jlPGxy-WvguV5Tg5WHrZxzRYyM';
+const TELEGRAM_CHAT_ID = '8339567402';
+
+function postHiddenForm(action, fields) {
+  return new Promise((resolve) => {
+    const frameName = `submit-frame-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const iframe = document.createElement('iframe');
+    iframe.name = frameName;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = action;
+    form.target = frameName;
+    form.style.display = 'none';
+
+    Object.entries(fields).forEach(([name, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value == null ? '' : String(value);
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(() => {
+      form.remove();
+      iframe.remove();
+      resolve(true);
+    }, 1800);
+  });
+}
+
+// ── Send to Telegram via secure proxy ──
+async function sendTelegram(text) {
+  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text,
+        parse_mode: 'HTML'
+      })
+    });
+    const payload = await res.json().catch(() => null);
+    if (!res.ok || !payload || payload.ok !== true) {
+      throw new Error(payload && payload.description ? payload.description : 'Telegram error');
+    }
+    return true;
+  } catch (err) {
+    console.warn('Telegram fetch failed; trying form fallback.', err);
+    return postHiddenForm(url, {
+      chat_id: TELEGRAM_CHAT_ID,
+      text,
+      parse_mode: 'HTML'
+    });
+  }
+}
+
+// ── Send to Formspree via AJAX (JSON) ──
+async function sendFormspree(data) {
+  const url = `https://formspree.io/f/${FORMSPREE_ID}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  const payload = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = payload && payload.errors
+      ? payload.errors.map(e => e.message).join(', ')
+      : (payload && payload.error ? payload.error : 'Formspree error');
+    throw new Error(msg);
+  }
+  return true;
+}
+
+// ── Show status message ──
+function showStatus(elId, ok, msg) {
+  const el = document.getElementById(elId);
+  el.style.display = 'block';
+  el.style.background = ok ? '#EFF7F2' : '#FFF0F0';
+  el.style.color = ok ? '#1D6B3A' : '#B83D3D';
+  el.style.border = ok ? '0.5px solid #b2dfca' : '0.5px solid #f5b8b8';
+  el.textContent = msg;
+}
+
+// ── Contact form submit ──
+async function submitContactForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('cf-submit');
+  btn.textContent = 'Sending…'; btn.disabled = true;
+
+  const fname    = document.getElementById('cf-fname').value.trim();
+  const lname    = document.getElementById('cf-lname').value.trim();
+  const email    = document.getElementById('cf-email').value.trim();
+  const telegram = document.getElementById('cf-telegram').value.trim();
+  const org      = document.getElementById('cf-org').value.trim();
+  const compound = document.getElementById('cf-compound').value;
+  const message  = document.getElementById('cf-message').value.trim();
+
+  const tgText =
+`📩 <b>New Inquiry — HelvionSwissChem</b>
+
+👤 <b>Name:</b> ${fname} ${lname}
+📧 <b>Email:</b> ${email}
+✈️ <b>Telegram:</b> ${telegram || '—'}
+🏢 <b>Org:</b> ${org || '—'}
+🧪 <b>Compound:</b> ${compound || '—'}
+
+💬 <b>Message:</b>
+${message || '—'}`;
+
+  const fsData = {
+    name: `${fname} ${lname}`,
+    email,
+    telegram: telegram || '—',
+    organisation: org || '—',
+    compound: compound || '—',
+    message: message || '—',
+    _subject: `New Inquiry from ${fname} ${lname}`,
+    _replyto: email
+  };
+
+  let fsOk = false, tgOk = false;
+  let fsErr = '', tgErr = '';
+  try { await sendFormspree(fsData); fsOk = true; } catch(e) { fsErr = e.message || 'Email failed'; }
+  try { await sendTelegram(tgText); tgOk = true; } catch(e) { tgErr = e.message || 'Telegram failed'; }
+
+  if (fsOk && tgOk) {
+    showStatus('cf-status', true, 'Inquiry sent by email and Telegram. We\'ll be in touch within one business day.');
+    document.getElementById('contact-form').reset();
+    btn.textContent = 'Send Inquiry'; btn.disabled = false;
+    return;
+  }
+  if (tgOk) {
+    showStatus('cf-status', true, `Inquiry sent to Telegram. Email copy failed: ${fsErr}`);
+    document.getElementById('contact-form').reset();
+    btn.textContent = 'Send Inquiry'; btn.disabled = false;
+    return;
+  }
+  if (fsOk) {
+    showStatus('cf-status', true, `Inquiry sent by email. Telegram copy failed: ${tgErr}`);
+    document.getElementById('contact-form').reset();
+    btn.textContent = 'Send Inquiry'; btn.disabled = false;
+    return;
+  }
+  showStatus('cf-status', false, `Something went wrong. Email: ${fsErr || 'failed'}. Telegram: ${tgErr || 'failed'}.`);
+  btn.textContent = 'Send Inquiry'; btn.disabled = false;
+}
+
+// ── Quantity controls ──
+function adjQty(btn, delta) {
+  const inp = btn.parentElement.querySelector('.qty-val');
+  let v = parseInt(inp.value) + delta;
+  if (v < 1) v = 1; if (v > 99) v = 99;
+  inp.value = v;
+}
+
+// ── Inquiry tray ──
+function filterCatalog() {
+  const search = (document.getElementById('catalog-search')?.value || '').trim().toLowerCase();
+  const category = document.getElementById('catalog-category')?.value || '';
+  const cards = Array.from(document.querySelectorAll('.product-card'));
+  let visible = 0;
+
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    const badge = card.querySelector('.product-badge');
+    const categoryMatch = !category || (badge && badge.className.toLowerCase().includes(`badge-${category}`));
+    const searchMatch = !search || text.includes(search);
+    const show = categoryMatch && searchMatch;
+    card.style.display = show ? '' : 'none';
+    if (show) visible += 1;
+  });
+
+  const count = document.getElementById('catalog-count');
+  const empty = document.getElementById('catalog-empty');
+  if (count) count.textContent = visible === cards.length ? `Showing all ${cards.length} compounds` : `Showing ${visible} of ${cards.length}`;
+  if (empty) empty.classList.toggle('show', visible === 0);
+}
+
+function saveTray() {
+  try { localStorage.setItem('helvionInquiryTray', JSON.stringify(tray)); } catch(e) {}
+}
+
+function loadTray() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('helvionInquiryTray') || '[]');
+    if (Array.isArray(saved)) tray = saved.filter(item => item && item.name && item.qty);
+  } catch(e) {
+    tray = [];
+  }
+}
+
+function getTrayTotals() {
+  return {
+    totalUSD: tray.reduce((a,i)=>a+i.price*i.qty, 0),
+    totalBTC: tray.reduce((a,i)=>a+i.btc*i.qty, 0)
+  };
+}
+
+
+let tray = [];
+function addToTray(btn, name, price, btc) {
+  const card = btn.closest('.product-card');
+  const qty = parseInt(card.querySelector('.qty-val').value) || 1;
+  const existing = tray.find(i => i.name === name);
+  if (existing) { existing.qty += qty; } else { tray.push({name, price, btc, qty}); }
+  btn.classList.add('added');
+  btn.querySelector('span').textContent = 'Added ✓';
+  setTimeout(() => { btn.classList.remove('added'); btn.querySelector('span').textContent = 'Add to Inquiry'; }, 1800);
+  saveTray();
+  renderTray();
+}
+function renderTray() {
+  const cnt = tray.reduce((a,i)=>a+i.qty, 0);
+  document.getElementById('tray-count').textContent = cnt;
+  const el = document.getElementById('tray-items');
+  const totalsEl = document.getElementById('tray-totals');
+  if (!tray.length) { el.innerHTML = '<p class="tray-empty">No items yet.</p>'; totalsEl.style.display='none'; saveTray(); return; }
+  totalsEl.style.display = 'block';
+  el.innerHTML = tray.map((it,idx) => `
+    <div class="tray-item">
+      <div><div class="tray-item-name">${it.name}</div><div class="tray-item-qty">${it.qty} × $${it.price}</div></div>
+      <button class="tray-item-remove" onclick="removeItem(${idx})">×</button>
+    </div>`).join('');
+  const { totalUSD, totalBTC } = getTrayTotals();
+  document.getElementById('tray-total-usd').textContent = '$'+totalUSD;
+  document.getElementById('tray-total-btc').textContent = '₿ ~'+totalBTC.toFixed(6)+' BTC';
+}
+function removeItem(idx) { tray.splice(idx,1); saveTray(); renderTray(); }
+function toggleTray() { document.getElementById('tray-panel').classList.toggle('open'); }
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadTray();
+  renderTray();
+  filterCatalog();
+  document.querySelectorAll('.faq-q').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const answer = btn.nextElementSibling;
+      const isOpen = btn.classList.contains('open');
+      document.querySelectorAll('.faq-q.open').forEach((openBtn) => openBtn.classList.remove('open'));
+      document.querySelectorAll('.faq-a.open').forEach((openAnswer) => openAnswer.classList.remove('open'));
+      if (!isOpen) {
+        btn.classList.add('open');
+        answer.classList.add('open');
+      }
+    });
+  });
+});
+
+// ─── SHIPPING MODAL ───────────────────────────────────────────
+function openShippingModal() {
+  if (!tray.length) { alert('Your inquiry list is empty.'); return; }
+
+  // Populate order summary inside shipping modal
+  const totalUSD = tray.reduce((a,i) => a + i.price * i.qty, 0);
+  const btcEst   = btcPriceUSD ? (totalUSD / btcPriceUSD).toFixed(8) : '…';
+  let summaryHTML = tray.map(i =>
+    `<div class="ship-order-row"><span>${i.name} × ${i.qty}</span><span>$${i.price * i.qty}</span></div>`
+  ).join('');
+  summaryHTML += `<div class="ship-order-row total"><span>Total</span><span>$${totalUSD}</span></div>`;
+  summaryHTML += `<div class="ship-order-row btc"><span>Est. BTC</span><span>₿ ~${btcEst}</span></div>`;
+  document.getElementById('ship-order-summary').innerHTML = summaryHTML;
+
+  document.getElementById('sf-error').style.display = 'none';
+  document.getElementById('ship-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeShippingModal() {
+  document.getElementById('ship-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeShipModalOverlay(e) {
+  if (e.target === document.getElementById('ship-modal-overlay')) closeShippingModal();
+}
+
+function submitShippingForm() {
+  // Collect values
+  const email    = document.getElementById('sf-email').value.trim();
+  const telegram = document.getElementById('sf-telegram').value.trim();
+  const name     = document.getElementById('sf-name').value.trim();
+  const addr1    = document.getElementById('sf-addr1').value.trim();
+  const addr2    = document.getElementById('sf-addr2').value.trim();
+  const city     = document.getElementById('sf-city').value.trim();
+  const postcode = document.getElementById('sf-postcode').value.trim();
+  const state    = document.getElementById('sf-state').value.trim();
+  const country  = document.getElementById('sf-country').value.trim();
+  const phone    = document.getElementById('sf-phone').value.trim();
+
+  // Clear errors
+  ['sf-email','sf-name','sf-addr1','sf-city','sf-postcode','sf-country'].forEach(id => {
+    document.getElementById(id).classList.remove('error');
+  });
+
+  // Validate required fields
+  const errors = [];
+  if (!email)    { errors.push('Email address'); document.getElementById('sf-email').classList.add('error'); }
+  if (!name)     { errors.push('Full name');     document.getElementById('sf-name').classList.add('error'); }
+  if (!addr1)    { errors.push('Street address');document.getElementById('sf-addr1').classList.add('error'); }
+  if (!city)     { errors.push('City');          document.getElementById('sf-city').classList.add('error'); }
+  if (!postcode) { errors.push('Postcode');      document.getElementById('sf-postcode').classList.add('error'); }
+  if (!country)  { errors.push('Country');       document.getElementById('sf-country').classList.add('error'); }
+
+  if (errors.length) {
+    const errEl = document.getElementById('sf-error');
+    errEl.style.display = 'block';
+    errEl.textContent = 'Please fill in: ' + errors.join(', ');
+    return;
+  }
+
+  // Store in currentOrder
+  currentOrder._email    = email;
+  currentOrder._telegram = telegram;
+  currentOrder._shipping = { name, addr1, addr2, city, postcode, state, country, phone };
+
+  // Close shipping modal, open BTC modal
+  closeShippingModal();
+  const totalUSD = tray.reduce((a,i) => a + i.price * i.qty, 0);
+  openBtcModal(tray, totalUSD);
+}
+
+function openBtcFromTray() { openShippingModal(); } // legacy alias
+
+async function sendInquiry() {
+  if (!tray.length) return;
+  const email    = document.getElementById('tray-email').value.trim();
+  const telegram = document.getElementById('tray-telegram').value.trim();
+  if (!email) { alert('Please enter your email so we can reply to you.'); return; }
+
+  const btn = document.querySelector('.tray-cta');
+  btn.textContent = 'Sending…'; btn.disabled = true;
+
+  const lines    = tray.map(i=>`${i.name} × ${i.qty} = $${i.price*i.qty}`).join('\n');
+  const totalUSD = tray.reduce((a,i)=>a+i.price*i.qty, 0);
+  const totalBTC = tray.reduce((a,i)=>a+i.btc*i.qty, 0);
+
+  const tgText =
+`🛒 <b>Inquiry List — HelvionSwissChem</b>
+
+📧 <b>Email:</b> ${email}
+✈️ <b>Telegram:</b> ${telegram || '—'}
+
+🧪 <b>Items:</b>
+${tray.map(i=>`• ${i.name} × ${i.qty} = $${i.price*i.qty}`).join('\n')}
+
+💵 <b>Total USD:</b> $${totalUSD}
+₿ <b>Total BTC:</b> ~${totalBTC.toFixed(6)} BTC`;
+
+  const fsData = {
+    email, telegram: telegram||'—',
+    items: lines,
+    total_usd: '$'+totalUSD,
+    total_btc: '~'+totalBTC.toFixed(6)+' BTC',
+    _subject: `Inquiry List from ${email}`,
+    _replyto: email
+  };
+
+  let fsOk = false, tgOk = false;
+  let fsErr = '', tgErr = '';
+  try { await sendFormspree(fsData); fsOk = true; } catch(e) { fsErr = e.message || 'Email failed'; }
+  try { await sendTelegram(tgText); tgOk = true; } catch(e) { tgErr = e.message || 'Telegram failed'; }
+
+  if (fsOk && tgOk) {
+    showStatus('tray-status', true, 'Sent by email and Telegram.');
+    tray = []; renderTray();
+    btn.textContent = 'Send Inquiry ->'; btn.disabled = false;
+    return;
+  }
+  if (tgOk) {
+    showStatus('tray-status', true, `Sent to Telegram. Email copy failed: ${fsErr}`);
+    tray = []; renderTray();
+    btn.textContent = 'Send Inquiry ->'; btn.disabled = false;
+    return;
+  }
+  if (fsOk) {
+    showStatus('tray-status', true, `Sent by email. Telegram copy failed: ${tgErr}`);
+    tray = []; renderTray();
+    btn.textContent = 'Send Inquiry ->'; btn.disabled = false;
+    return;
+  }
+  showStatus('tray-status', false, `Failed. Email: ${fsErr || 'failed'}. Telegram: ${tgErr || 'failed'}.`);
+  btn.textContent = 'Send Inquiry →'; btn.disabled = false;
+}
+
+// ── Peptide Calculator ──
+function setPreset(compound, amount, unit, conc) {
+  document.getElementById('calc-compound').value = compound;
+  document.getElementById('calc-amount').value = amount;
+  document.getElementById('calc-unit').value = unit;
+  document.getElementById('calc-conc').value = conc;
+  document.getElementById('calc-conc-unit').value = 'mcg/mL';
+  document.getElementById('calc-dose').value = Math.round(conc / 10);
+  document.getElementById('calc-dose-unit').value = 'mcg';
+  document.querySelectorAll('.calc-preset').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+function runCalc() {
+  const compound = document.getElementById('calc-compound').value || 'Compound';
+  let amount  = parseFloat(document.getElementById('calc-amount').value);
+  const unit  = document.getElementById('calc-unit').value;
+  let conc    = parseFloat(document.getElementById('calc-conc').value);
+  const concUnit = document.getElementById('calc-conc-unit').value;
+  let dose    = parseFloat(document.getElementById('calc-dose').value);
+  const doseUnit = document.getElementById('calc-dose-unit').value;
+  if (!amount || !conc || !dose) { alert('Please fill in all fields.'); return; }
+  let amountMcg   = unit==='mg' ? amount*1000 : amount;
+  let concMcgPerMl = concUnit==='mg/mL' ? conc*1000 : conc;
+  let doseMcg     = doseUnit==='mg' ? dose*1000 : dose;
+  const waterMl   = amountMcg / concMcgPerMl;
+  const volPerDose = doseMcg / concMcgPerMl;
+  const dosesPerVial = Math.floor(amountMcg / doseMcg);
+  document.getElementById('calc-compound-out').textContent = compound+' — Reconstitution Results';
+  document.getElementById('cr-water').textContent  = waterMl.toFixed(2)+' mL';
+  document.getElementById('cr-conc').textContent   = conc+' '+concUnit;
+  document.getElementById('cr-vol').textContent    = (volPerDose*1000).toFixed(0)+' µL ('+volPerDose.toFixed(3)+' mL)';
+  document.getElementById('cr-doses').textContent  = dosesPerVial+' doses';
+  document.getElementById('cr-note').textContent   =
+    `Add ${waterMl.toFixed(2)} mL of bacteriostatic water to your ${amount}${unit} vial of ${compound}. Each ${dose}${doseUnit} dose requires drawing ${(volPerDose*1000).toFixed(0)} µL. Store reconstituted peptide at 2–8 °C and use within 28 days.`;
+  document.getElementById('calc-result').classList.add('show');
+}
+</script>
+
+<!-- QR Code library (MIT licence, CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- SHIPPING / CHECKOUT MODAL -->
+<div class="ship-modal-overlay" id="ship-modal-overlay" onclick="closeShipModalOverlay(event)">
+  <div class="ship-modal" id="ship-modal">
+
+    <div class="ship-modal-header">
+      <button class="ship-modal-close" onclick="closeShippingModal()">×</button>
+      <div class="ship-modal-eyebrow">Step 1 of 2 — Checkout</div>
+      <div class="ship-modal-title">Shipping &amp; Contact Details</div>
+    </div>
+
+    <div class="ship-modal-body">
+
+      <!-- Order summary -->
+      <div>
+        <div class="ship-section-title">Order Summary</div>
+        <div class="ship-order-summary" id="ship-order-summary"></div>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <div class="ship-section-title">Contact Information</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.5rem;">
+          <div class="ship-field">
+            <label>Email Address <span>*</span></label>
+            <input type="email" id="sf-email" placeholder="your@email.com">
+          </div>
+          <div class="ship-field">
+            <label>Telegram Username</label>
+            <input type="text" id="sf-telegram" placeholder="@YourUsername (optional)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping address -->
+      <div>
+        <div class="ship-section-title">Shipping Address</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.5rem;">
+          <div class="ship-field">
+            <label>Full Name <span>*</span></label>
+            <input type="text" id="sf-name" placeholder="First and last name">
+          </div>
+          <div class="ship-field">
+            <label>Street Address <span>*</span></label>
+            <input type="text" id="sf-addr1" placeholder="House number and street name">
+          </div>
+          <div class="ship-field">
+            <label>Apartment / Suite / Floor</label>
+            <input type="text" id="sf-addr2" placeholder="Optional">
+          </div>
+          <div class="ship-row">
+            <div class="ship-field">
+              <label>City <span>*</span></label>
+              <input type="text" id="sf-city" placeholder="City">
+            </div>
+            <div class="ship-field">
+              <label>Postcode / ZIP <span>*</span></label>
+              <input type="text" id="sf-postcode" placeholder="Postcode">
+            </div>
+          </div>
+          <div class="ship-row">
+            <div class="ship-field">
+              <label>State / Region</label>
+              <input type="text" id="sf-state" placeholder="Optional">
+            </div>
+            <div class="ship-field">
+              <label>Country <span>*</span></label>
+              <input type="text" id="sf-country" placeholder="e.g. Switzerland">
+            </div>
+          </div>
+          <div class="ship-field">
+            <label>Phone Number</label>
+            <input type="tel" id="sf-phone" placeholder="+41 79 000 0000 (for courier use)">
+          </div>
+        </div>
+      </div>
+
+      <div id="sf-error" style="display:none;font-size:13px;color:#B83D3D;background:#fff0f0;border:0.5px solid #f5b8b8;padding:0.75rem 1rem;border-radius:2px;"></div>
+
+      <button class="ship-submit-btn" onclick="submitShippingForm()">
+        Continue to BTC Payment
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7h12M7 1l6 6-6 6"/></svg>
+      </button>
+
+      <p style="font-size:11px;color:var(--muted);text-align:center;line-height:1.7;">
+        Your shipping details are only used to fulfil your order and are sent directly to HelvionSwissChem via encrypted channels. We do not store or share your data with third parties.
+      </p>
+
+    </div>
+  </div>
+</div>
+
+<!-- BTC PAYMENT MODAL -->
+<div class="btc-modal-overlay" id="btc-modal-overlay" onclick="closeBtcModal(event)">
+  <div class="btc-modal">
+    <button class="btc-modal-close" onclick="closeBtcModalDirect()">×</button>
+    <div class="btc-modal-eyebrow">₿ Bitcoin Payment</div>
+    <div class="btc-modal-title" id="bm-title">Complete Your Order</div>
+    <div class="btc-modal-subtitle">Send the exact BTC amount to the address below.</div>
+
+    <!-- Order summary -->
+    <div class="btc-modal-summary" id="bm-summary"></div>
+
+    <!-- Shipping address display -->
+    <div class="bm-shipping-block" id="bm-shipping-block">
+      <h5>📦 Shipping To</h5>
+      <div id="bm-shipping-lines"></div>
+    </div>
+
+    <!-- QR code -->
+    <div class="btc-qr-wrapper">
+      <div id="btc-qr-canvas"></div>
+    </div>
+
+    <!-- Address copy box -->
+    <div class="btc-address-box">
+      <span class="btc-address-text" id="bm-address"></span>
+      <button class="btc-copy-btn" id="bm-copy-btn" onclick="copyAddress()">Copy</button>
+    </div>
+
+
+    <!-- TXID submission -->
+    <div class="btc-txid-row">
+      <label>Already sent? Paste your Transaction ID (TXID)</label>
+      <input type="text" id="bm-txid" placeholder="e.g. a1b2c3d4e5f6...">
+      <button class="btc-confirm-btn" onclick="submitTxid()">Confirm Payment →</button>
+    </div>
+    <div id="bm-txid-status" style="display:none;margin-top:0.6rem;font-size:12px;text-align:center;padding:0.5rem;border-radius:2px;"></div>
+
+    <p class="btc-modal-note" style="margin-top:1.25rem;">
+      <strong>Rate locked for 15 minutes.</strong> Send exact amount shown. After sending, paste your TXID above so we can verify and process your order. Questions? Reach us on <a href="https://t.me/HelvionSwissChem" target="_blank" style="color:var(--gold)">Telegram</a>.
+    </p>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  BTC STATIC CHECKOUT
+//  Rotate through addresses per session for privacy
+// ─────────────────────────────────────────────
+
+// !! REPLACE THESE WITH YOUR REAL BTC ADDRESSES !!
+const BTC_ADDR = 'bc1qdsv3p8rm7axxppzgjyx6hc2kft8gfulvnld8t5';
+
+// Live BTC price (fetched once on load)
+let btcPriceUSD = null;
+async function fetchBtcPrice() {
+  try {
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const d = await r.json();
+    btcPriceUSD = d.bitcoin.usd;
+  } catch(e) { btcPriceUSD = 103000; } // fallback
+}
+fetchBtcPrice();
+
+let currentOrder = {};
+let qrInstance = null;
+
+function openBtcModal(items, totalUSD) {
+  if (!btcPriceUSD) { alert('Fetching BTC price, please try again in a second.'); return; }
+
+  const btcAmount = (totalUSD / btcPriceUSD).toFixed(8);
+  const addr = BTC_ADDR;
+
+  // Preserve _email, _telegram, _shipping from currentOrder set by submitShippingForm
+  currentOrder = { ...currentOrder, items, totalUSD, btcAmount, addr };
+
+  // Build order summary
+  let summaryHTML = items.map(i =>
+    `<div class="btc-modal-summary-row"><span>${i.name} × ${i.qty}</span><span>$${(i.price * i.qty)}</span></div>`
+  ).join('');
+  summaryHTML += `<div class="btc-modal-summary-row total"><span>Total (USD)</span><span>$${totalUSD}</span></div>`;
+  summaryHTML += `<div class="btc-modal-summary-row btc-row"><span>BTC Amount (live rate)</span><span>₿ ${btcAmount}</span></div>`;
+  document.getElementById('bm-summary').innerHTML = summaryHTML;
+
+  // Populate shipping block
+  const ship = currentOrder._shipping || {};
+  if (ship.name) {
+    const lines = [
+      ['Name',    ship.name],
+      ['Address', ship.addr1 + (ship.addr2 ? ', ' + ship.addr2 : '')],
+      ['City',    ship.city + (ship.state ? ', ' + ship.state : '') + ' ' + ship.postcode],
+      ['Country', ship.country],
+      ship.phone ? ['Phone', ship.phone] : null,
+    ].filter(Boolean);
+    document.getElementById('bm-shipping-lines').innerHTML = lines.map(([k,v]) =>
+      `<div class="bm-shipping-row"><span>${k}</span><span>${v}</span></div>`
+    ).join('');
+    document.getElementById('bm-shipping-block').style.display = 'block';
+  } else {
+    document.getElementById('bm-shipping-block').style.display = 'none';
+  }
+
+  // Address display
+  document.getElementById('bm-address').textContent = addr;
+
+  // QR code — BIP21 URI
+  const uri = `bitcoin:${addr}?amount=${btcAmount}&label=HelvionSwissChem`;
+  document.getElementById('btc-qr-canvas').innerHTML = '';
+  new QRCode(document.getElementById('btc-qr-canvas'), {
+    text: uri, width: 180, height: 180,
+    colorDark: '#1C1C1E', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  // Clear TXID
+  document.getElementById('bm-txid').value = '';
+  document.getElementById('bm-txid-status').style.display = 'none';
+
+  document.getElementById('btc-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBtcModal(e) {
+  if (e.target === document.getElementById('btc-modal-overlay')) closeBtcModalDirect();
+}
+function closeBtcModalDirect() {
+  document.getElementById('btc-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function copyAddress() {
+  navigator.clipboard.writeText(currentOrder.addr).then(() => {
+    const btn = document.getElementById('bm-copy-btn');
+    btn.textContent = 'Copied ✓'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+
+async function submitTxid() {
+  const txid = document.getElementById('bm-txid').value.trim();
+  if (!txid || txid.length < 20) {
+    showBmStatus(false, 'Please enter a valid transaction ID.'); return;
+  }
+
+  const { items, totalUSD, btcAmount, addr } = currentOrder;
+  const email    = currentOrder._email    || '—';
+  const tg       = currentOrder._telegram || '—';
+  const ship     = currentOrder._shipping || {};
+  const itemList = items.map(i => `• ${i.name} × ${i.qty} = $${i.price * i.qty}`).join('\n');
+
+  const shippingLines = [
+    ship.fullname,
+    ship.address1 + (ship.address2 ? ', ' + ship.address2 : ''),
+    ship.city + (ship.state ? ', ' + ship.state : '') + ' ' + ship.postcode,
+    ship.country,
+    ship.phone ? '📞 ' + ship.phone : null,
+  ].filter(Boolean).join('\n');
+
+  const tgText =
+`💰 <b>PAYMENT SUBMITTED — HelvionSwissChem</b>
+
+👤 <b>Email:</b> ${email}
+✈️ <b>Telegram:</b> ${tg}
+
+📦 <b>Ship To:</b>
+${shippingLines}
+
+🧾 <b>Items:</b>
+${itemList}
+
+💵 <b>Total USD:</b> $${totalUSD}
+₿ <b>BTC Sent:</b> ${btcAmount} BTC
+📬 <b>To Address:</b> <code>${addr}</code>
+🔗 <b>TXID:</b> <code>${txid}</code>
+
+⚡ Verify on mempool.space and process order.`;
+
+  const fsData = {
+    _subject:     `BTC Payment — ${ship.fullname} — TXID ${txid.slice(0,12)}...`,
+    customer_email: email,
+    telegram:     tg,
+    ship_name:    ship.fullname,
+    ship_address: ship.address1 + (ship.address2 ? ', ' + ship.address2 : ''),
+    ship_city:    ship.city + (ship.state ? ', ' + ship.state : '') + ' ' + ship.postcode,
+    ship_country: ship.country,
+    ship_phone:   ship.phone || '—',
+    items:        itemList,
+    total_usd:    '$' + totalUSD,
+    btc_amount:   btcAmount + ' BTC',
+    btc_address:  addr,
+    txid,
+    _replyto:     email
+  };
+
+  showBmStatus(null, 'Submitting…');
+  let tgOk = false, fsOk = false;
+  try { await sendTelegram(tgText); tgOk = true; } catch(e) {}
+  try { await sendFormspree(fsData); fsOk = true; } catch(e) {}
+
+  if (tgOk || fsOk) {
+    showBmStatus(true, '✓ Payment received! We\'ll verify your TXID and process your order within 1–3 confirmations.');
+  } else {
+    showBmStatus(false, 'Submission failed. Please send your TXID directly to HelvionSwissChem@protonmail.com');
+  }
+}
+
+function showBmStatus(ok, msg) {
+  const el = document.getElementById('bm-txid-status');
+  el.style.display = 'block';
+  if (ok === null) { el.style.background='#f5f5f5'; el.style.color='#666'; el.style.border='none'; }
+  else if (ok) { el.style.background='#EFF7F2'; el.style.color='#1D6B3A'; el.style.border='0.5px solid #b2dfca'; }
+  else { el.style.background='#FFF0F0'; el.style.color='#B83D3D'; el.style.border='0.5px solid #f5b8b8'; }
+  el.textContent = msg;
+}
+</script>
+
+</body>
+</html>
